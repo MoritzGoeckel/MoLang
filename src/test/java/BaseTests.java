@@ -67,9 +67,17 @@ class BaseTests {
 
     @Test
     void multilineTest() {
-        Molang lang = new Molang("a = 1; b = 2");
+        Molang lang = new Molang("a = 1; b = 2; a = 4");
         lang.exec();
-        assertEquals(1, lang.getContext().getIdentifier("a").evaluate(), "a is 1");
-        assertEquals(2, lang.getContext().getIdentifier("b").evaluate(), "b is 2");
+        assertEquals(4, lang.getContext().getIdentifier("a").evaluate());
+        assertEquals(2, lang.getContext().getIdentifier("b").evaluate());
+    }
+
+    @Test
+    void multilineComplexTest() {
+        Molang lang = new Molang("a = 10 * 30 + 3; b = a / 3;");
+        lang.exec();
+        assertEquals(303, lang.getContext().getIdentifier("a").evaluate());
+        assertEquals(101, lang.getContext().getIdentifier("b").evaluate());
     }
 }

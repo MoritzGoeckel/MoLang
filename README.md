@@ -22,6 +22,15 @@ b = a / 3;
 - [ ] Scope
 - [ ] Functions
 
+## Usage in Java
+``` java
+Molang lang = new Molang("a = 10 * 30 + 3; b = a / 3;");
+lang.exec();
+
+assertEquals(303, lang.getContext().getIdentifier("a").evaluate());
+assertEquals(101, lang.getContext().getIdentifier("b").evaluate());
+```
+
 ## Tests
 The entire project is unit tested with JUnit 5 and the current line coverage is 92%.
 

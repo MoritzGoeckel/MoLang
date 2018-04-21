@@ -7,7 +7,7 @@ public class Divide extends Operator<Integer>{
     private static int priority = 2;
 
     public static ExpressionInfo getTokenType(){
-        return new ExpressionInfo("Divide", priority, true, x -> x.equals(";"));
+        return new ExpressionInfo("Divide", priority, true, x -> x.equals("/"));
     }
 
     @Override
