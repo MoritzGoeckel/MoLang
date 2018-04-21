@@ -13,6 +13,12 @@ b = a / 3;
 - [x] Variables
 - [x] Number literals (1, 2, 3 etc.)
 - [x] Multiline programs (seperated by ';')
+- [ ] Bool type
+- [ ] String type
+- [ ] Jumps (if, else etc.)
+- [ ] Loops
+- [ ] Scope
+- [ ] Functions
 
 ## Tests
 The entire project is unit tested with a current line coverage of 92%.
