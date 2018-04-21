@@ -2,6 +2,7 @@ package Tokenizer;
 
 import Expressions.*;
 
+import javax.crypto.SealedObject;
 import java.util.*;
 import java.util.function.Predicate;
 
@@ -14,6 +15,7 @@ public class Tokenizer {
         expressionInfos.add(Multiply.getTokenType());
         expressionInfos.add(Identifier.getTokenType());
         expressionInfos.add(Assignment.getTokenType());
+        expressionInfos.add(Seperator.getTokenType());
     }
 
     private String seperators = "();[]{}+-*/=";

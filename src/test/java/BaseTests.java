@@ -7,9 +7,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class BaseTests {
+class BaseTests {
     @Test
-    public void simpleTest() {
+    void tokenizerTest() {
         Tokenizer t = new Tokenizer();
 
         List<Token> tokens = t.tokenize("10 + 20 + 3 + 4");
@@ -23,7 +23,7 @@ public class BaseTests {
     }
 
     @Test
-    public void astSimpleTest() {
+    void astSimpleTest() {
         executeTests(new String[][]{
                 {"1","1"},
                 {"1 + 2", "3"},
@@ -34,7 +34,7 @@ public class BaseTests {
     }
 
     @Test
-    public void astComplexTest() {
+    void astComplexTest() {
         executeTests(new String[][]{
                 {"1 * 2 + 3","5"},
                 {"2 + 3 * 4", "14"},
@@ -45,26 +45,31 @@ public class BaseTests {
     }
 
     private void executeTests(String[][] codes){
-        for(int i = 0; i < codes.length; i++){
-            Molang lang = new Molang(codes[i][0]);
-            RightValue<Integer> v = (RightValue<Integer>)lang.getAst();
-            assertEquals(new Integer(codes[i][1]), v.evaluate());
+        for (String[] code : codes) {
+            Molang lang = new Molang(code[0]);
+            assertEquals(new Integer(code[1]), lang.execLine());
         }
     }
 
     @Test
-    public void identifierTest() {
+    void identifierTest() {
         Molang lang = new Molang("a = 10");
-        RightValue<Integer> v = (RightValue<Integer>)lang.getAst();
-        assertEquals(new Integer(10), v.evaluate(), "Expression is 10");
+        assertEquals(new Integer(10), lang.execLine(), "Expression is 10");
         assertEquals(10, lang.getContext().getIdentifier("a").evaluate(), "Variable is 10");
     }
 
     @Test
-    public void identifierComplexTest() {
+    void identifierComplexTest() {
         Molang lang = new Molang("a = 10 * 5 + 3 * 2 * 1");
-        RightValue<Integer> v = (RightValue<Integer>)lang.getAst();
-        assertEquals(new Integer(56), v.evaluate(), "Expression is 56");
+        assertEquals(new Integer(56), lang.execLine(), "Expression is 56");
         assertEquals(56, lang.getContext().getIdentifier("a").evaluate(), "Variable is 56");
+    }
+
+    @Test
+    void multilineTest() {
+        Molang lang = new Molang("a = 1; b = 2");
+        lang.exec();
+        assertEquals(1, lang.getContext().getIdentifier("a").evaluate(), "a is 1");
+        assertEquals(2, lang.getContext().getIdentifier("b").evaluate(), "b is 2");
     }
 }

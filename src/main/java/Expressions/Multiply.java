@@ -2,8 +2,6 @@ package Expressions;
 
 import Tokenizer.ExpressionInfo;
 
-import java.util.function.Predicate;
-
 public class Multiply extends Operator<Integer>{
 
     private static int priority = 2;

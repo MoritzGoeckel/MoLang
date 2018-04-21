@@ -1,23 +1,44 @@
 import Expressions.Expression;
 import Expressions.Operator;
 import Expressions.RightValue;
+import Expressions.Seperator;
 import Tokenizer.*;
 
 import java.util.*;
 
 public class Molang {
-    private Expression ast;
+    private LinkedList<Expression> expressions;
     private Context context;
 
     public Molang(String code){
         Tokenizer tokenizer = new Tokenizer();
         LinkedList<Token> tokens = tokenizer.tokenize(code);
         context = new Context();
-
-        ast = createExpressionTree(tokens);
+        expressions = createExpressionList(tokens);
     }
 
-    public RightValue createExpressionTree(LinkedList<Token> tokens){
+    private LinkedList<Expression> createExpressionList(LinkedList<Token> tokens){
+        LinkedList<Expression> expressions = new LinkedList<>();
+        LinkedList<Token> latestTokens = new LinkedList<>();
+
+        while (!tokens.isEmpty()) {
+            Token currentToken = tokens.pop();
+            if (currentToken.getType().equals(Seperator.getTokenType())){
+                expressions.add(createExpressionTree(latestTokens));
+                latestTokens.clear();
+            }
+            else {
+                latestTokens.add(currentToken);
+            }
+        }
+
+        if(!latestTokens.isEmpty())
+            expressions.add(createExpressionTree(latestTokens));
+
+        return expressions;
+    }
+
+    private RightValue createExpressionTree(LinkedList<Token> tokens){
         LinkedList<Operator> operatorBacklog = new LinkedList<>();
         LinkedList<RightValue> valueBacklog = new LinkedList<>();
 
@@ -56,12 +77,13 @@ public class Molang {
         return valueBacklog.pop();
     }
 
-    public int exec(){
-        return 0;
+    public void exec(){
+        for(Expression e : expressions)
+            e.execute();
     }
 
-    public Expression getAst() {
-        return ast;
+    public Integer execLine(){
+        return (Integer)((RightValue)expressions.get(0)).evaluate();
     }
 
     public Context getContext() {
