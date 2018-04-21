@@ -18,13 +18,13 @@ public class Tokenizer {
 
     private String seperators = "();[]{}+-*/";
 
-    public List<Token> tokenize(String code){
+    public LinkedList<Token> tokenize(String code){
         for(Character c : seperators.toCharArray())
             code = code.replace(c.toString(), " "+c.toString()+" ");
 
         String[] items = code.split(" ");
 
-        List<Token> tokens = new LinkedList<Token>();
+        LinkedList<Token> tokens = new LinkedList<Token>();
         for(String item : items){
             if(item.isEmpty())
                 continue;

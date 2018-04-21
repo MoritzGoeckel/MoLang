@@ -10,43 +10,42 @@ public class Molang {
 
     public Molang(String code){
         Tokenizer tokenizer = new Tokenizer();
+        LinkedList<Token> tokens = tokenizer.tokenize(code);
+        ast = createExpressionTree(tokens);
+    }
 
-        LinkedList<Operator> operatorBacklock = new LinkedList<>();
-        LinkedList<RightValue> operandBacklock = new LinkedList<>();
+    public RightValue createExpressionTree(LinkedList<Token> tokens){
+        LinkedList<Operator> operatorBacklog = new LinkedList<>();
+        LinkedList<RightValue> valueBacklog = new LinkedList<>();
 
-        {
-            LinkedList<Token> tokens = new LinkedList<>();
-            tokens.addAll(tokenizer.tokenize(code));
-
-            while (!tokens.isEmpty()) {
-                Token currentToken = tokens.pop();
-                if (currentToken.getType().isOperator())
-                    operatorBacklock.add(ExpressionFactory.createOperatorExpr(currentToken));
-                else
-                    operandBacklock.add(ExpressionFactory.createRightValueExpr(currentToken));
-            }
+        while (!tokens.isEmpty()) {
+            Token currentToken = tokens.pop();
+            if (currentToken.getType().isOperator())
+                operatorBacklog.add(ExpressionFactory.createOperatorExpr(currentToken));
+            else
+                valueBacklog.add(ExpressionFactory.createRightValueExpr(currentToken));
         }
 
-        while (operatorBacklock.size() + operandBacklock.size() > 1){
-            Operator currentOperator = operatorBacklock.pop();
-            RightValue value = operandBacklock.pop();
+        while (operatorBacklog.size() + valueBacklog.size() > 1){
+            Operator currentOperator = operatorBacklog.pop();
+            RightValue value = valueBacklog.pop();
 
             int nextOperatorPriority = -1;
-            if(!operatorBacklock.isEmpty()){
-                nextOperatorPriority = operatorBacklock.peek().getPriority();
+            if(!operatorBacklog.isEmpty()){
+                nextOperatorPriority = operatorBacklog.peek().getPriority();
             }
 
             if(currentOperator.getPriority() >= nextOperatorPriority){
-                currentOperator.assign(value, operandBacklock.pop());
-                operandBacklock.push(currentOperator);
+                currentOperator.assign(value, valueBacklog.pop());
+                valueBacklog.push(currentOperator);
             }
             else{
-                operandBacklock.add(value);
-                operatorBacklock.add(currentOperator);
+                valueBacklog.add(value);
+                operatorBacklog.add(currentOperator);
             }
         }
 
-        ast = operandBacklock.pop();
+        return valueBacklog.pop();
     }
 
     public int exec(){

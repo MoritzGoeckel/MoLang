@@ -8,13 +8,5 @@ public abstract class Operator<T> extends RightValue {
         this.right = right;
     }
 
-    public void assignOne(RightValue<T> left){
-        this.left = left;
-    }
-
-    public void assignOther(RightValue<T> right){
-        this.right = right;
-    }
-
     public abstract int getPriority();
 }

@@ -20,33 +20,31 @@ public class TokenizerTest {
 
     @Test
     public void astSimpleTest() {
-        Molang lang = new Molang("10 + 20 + 3 + 4");
-        RightValue<Integer> v = (RightValue<Integer>)lang.getAst();
-
-        assertEquals(new Integer(37), v.evaluate());
-    }
-
-    @Test
-    public void astSuperComplexTest() {
-        Molang lang = new Molang("10 + 20 + 3 * 4");
-        RightValue<Integer> v = (RightValue<Integer>)lang.getAst();
-
-        assertEquals(new Integer(42), v.evaluate());
+        executeTests(new String[][]{
+                {"1","1"},
+                {"1 + 2", "3"},
+                {"2 * 3", "6"},
+                {"2 * 3 * 4", "24"},
+                {"2 + 3 + 4", "9"},
+        });
     }
 
     @Test
     public void astComplexTest() {
-        Molang lang = new Molang("2 + 3 * 4");
-        RightValue<Integer> v = (RightValue<Integer>)lang.getAst();
-
-        assertEquals(new Integer(14), v.evaluate());
+        executeTests(new String[][]{
+                {"1 * 2 + 3","5"},
+                {"2 + 3 * 4", "14"},
+                {"2 + 3 * 5 + 1", "18"},
+                {"2 * 3 * 4 + 2", "26"},
+                {"2 + 3 + 4 * 3 * 2 + 1", "30"}
+        });
     }
 
-    @Test
-    public void astOtherComplexTest() {
-        Molang lang = new Molang("2 * 3 + 4");
-        RightValue<Integer> v = (RightValue<Integer>)lang.getAst();
-
-        assertEquals(new Integer(10), v.evaluate());
+    private void executeTests(String[][] codes){
+        for(int i = 0; i < codes.length; i++){
+            Molang lang = new Molang(codes[i][0]);
+            RightValue<Integer> v = (RightValue<Integer>)lang.getAst();
+            assertEquals(new Integer(codes[i][1]), v.evaluate());
+        }
     }
 }
