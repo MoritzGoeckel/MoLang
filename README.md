@@ -23,7 +23,7 @@ b = a / 3;
 - [ ] Functions
 
 ## Tests
-The entire project is unit tested with JUnit 5 and a current line coverage of 92%.
+The entire project is unit tested with JUnit 5 and the current line coverage is 92%.
 
 ### Assembly like interpreter
 If you like interpreters you might check out my [Assembly like interpreter](https://github.com/MoritzGoeckel/Assembly-ish-Interpreter) written in Node.js
