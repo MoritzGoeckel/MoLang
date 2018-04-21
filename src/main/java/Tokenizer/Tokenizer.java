@@ -1,8 +1,6 @@
 package Tokenizer;
 
-import Expressions.Multiply;
-import Expressions.Numliteral;
-import Expressions.Plus;
+import Expressions.*;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -14,9 +12,11 @@ public class Tokenizer {
         expressionInfos.add(Numliteral.getTokenType());
         expressionInfos.add(Plus.getTokenType());
         expressionInfos.add(Multiply.getTokenType());
+        expressionInfos.add(Identifier.getTokenType());
+        expressionInfos.add(Assignment.getTokenType());
     }
 
-    private String seperators = "();[]{}+-*/";
+    private String seperators = "();[]{}+-*/=";
 
     public LinkedList<Token> tokenize(String code){
         for(Character c : seperators.toCharArray())

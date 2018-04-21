@@ -11,14 +11,20 @@ public class ExpressionFactory {
         if(name.equals(Multiply.getTokenType().getExpressionName()))
             return new Multiply();
 
+        if(name.equals(Assignment.getTokenType().getExpressionName()))
+            return new Assignment();
+
         throw new RuntimeException("Operator Name not found: " + name);
     }
 
-    public static RightValue createRightValueExpr(Token token){
+    public static RightValue createRightValueExpr(Token token, Context context){
         String name = token.getType().getExpressionName();
 
         if(name.equals(Numliteral.getTokenType().getExpressionName()))
             return new Numliteral(token.getValue());
+
+        if(name.equals(Identifier.getTokenType().getExpressionName()))
+            return context.getIdentifier(token.getValue());
 
         throw new RuntimeException("Operator Name not found: " + name);
     }
