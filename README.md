@@ -10,9 +10,11 @@ b = a / 3;
 ## Features
 - [x] Simple operators (+-*/%)
 - [x] Assignment (=)
+- [x] Operator precedence
 - [x] Variables
 - [x] Number literals (1, 2, 3 etc.)
 - [x] Multiline programs (seperated by ';')
+- [ ] Brackets for changing precedence
 - [ ] Bool type
 - [ ] String type
 - [ ] Jumps (if, else etc.)
