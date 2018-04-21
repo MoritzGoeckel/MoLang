@@ -5,14 +5,25 @@ public class ExpressionFactory {
     public static Operator createOperatorExpr(Token token){
         String name = token.getType().getExpressionName();
 
+        //Todo: Make it configurable
+
         if(name.equals(Plus.getTokenType().getExpressionName()))
             return new Plus();
+
+        if(name.equals(Minus.getTokenType().getExpressionName()))
+            return new Minus();
 
         if(name.equals(Multiply.getTokenType().getExpressionName()))
             return new Multiply();
 
         if(name.equals(Assignment.getTokenType().getExpressionName()))
             return new Assignment();
+
+        if(name.equals(Divide.getTokenType().getExpressionName()))
+            return new Divide();
+
+        if(name.equals(Modulo.getTokenType().getExpressionName()))
+            return new Modulo();
 
         throw new RuntimeException("Operator Name not found: " + name);
     }

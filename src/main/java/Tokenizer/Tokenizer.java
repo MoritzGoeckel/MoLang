@@ -10,18 +10,23 @@ public class Tokenizer {
 
     private List<ExpressionInfo> expressionInfos = new ArrayList<>();
     {
+        //Todo: Make it configurable
         expressionInfos.add(Numliteral.getTokenType());
         expressionInfos.add(Plus.getTokenType());
         expressionInfos.add(Multiply.getTokenType());
         expressionInfos.add(Identifier.getTokenType());
         expressionInfos.add(Assignment.getTokenType());
         expressionInfos.add(Seperator.getTokenType());
+        expressionInfos.add(Minus.getTokenType());
+        expressionInfos.add(Modulo.getTokenType());
+        expressionInfos.add(Divide.getTokenType());
     }
 
-    private String seperators = "();[]{}+-*/=";
+    //Todo: Make it configurable
+    private String separators = "();[]{}+-*/=%";
 
     public LinkedList<Token> tokenize(String code){
-        for(Character c : seperators.toCharArray())
+        for(Character c : separators.toCharArray())
             code = code.replace(c.toString(), " "+c.toString()+" ");
 
         String[] items = code.split(" ");
