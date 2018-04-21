@@ -1,5 +1,5 @@
 package Expressions;
 
 public abstract class RightValue<T> extends Expression{
-    abstract T evaluate();
+    public abstract T evaluate();
 }

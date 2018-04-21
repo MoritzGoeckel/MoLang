@@ -1,7 +1,6 @@
 package Expressions;
 
-import Tokenizer.TokenType;
-import java.util.function.Predicate;
+import Tokenizer.ExpressionInfo;
 
 public class Numliteral extends RightValue<Integer> {
 
@@ -11,16 +10,12 @@ public class Numliteral extends RightValue<Integer> {
         this.value = Integer.parseInt(value);
     }
 
-    public static Predicate<String> getRecognizer(){
-        return x -> x.matches("[0-9]+");
-    }
-
-    public static TokenType getTokenType() {
-        return TokenType.NUMLITERAL;
+    public static ExpressionInfo getTokenType() {
+        return new ExpressionInfo("Numliteral", 0, false, x -> x.matches("[0-9]+"));
     }
 
     @Override
-    Integer evaluate() {
+    public Integer evaluate() {
         return value;
     }
 }

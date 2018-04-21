@@ -1,5 +1,5 @@
+import Expressions.RightValue;
 import Tokenizer.Token;
-import Tokenizer.TokenType;
 import Tokenizer.Tokenizer;
 import org.junit.jupiter.api.Test;
 
@@ -14,7 +14,39 @@ public class TokenizerTest {
 
         List<Token> tokens = t.tokenize("10 + 20 + 3 + 4");
 
-        assertEquals(TokenType.NUMLITERAL, tokens.get(0).getType());
-        assertEquals(TokenType.PLUS, tokens.get(1).getType());
+        assertEquals("Numliteral", tokens.get(0).getType().getExpressionName());
+        assertEquals("Plus", tokens.get(1).getType().getExpressionName());
+    }
+
+    @Test
+    public void astSimpleTest() {
+        Molang lang = new Molang("10 + 20 + 3 + 4");
+        RightValue<Integer> v = (RightValue<Integer>)lang.getAst();
+
+        assertEquals(new Integer(37), v.evaluate());
+    }
+
+    @Test
+    public void astSuperComplexTest() {
+        Molang lang = new Molang("10 + 20 + 3 * 4");
+        RightValue<Integer> v = (RightValue<Integer>)lang.getAst();
+
+        assertEquals(new Integer(42), v.evaluate());
+    }
+
+    @Test
+    public void astComplexTest() {
+        Molang lang = new Molang("2 + 3 * 4");
+        RightValue<Integer> v = (RightValue<Integer>)lang.getAst();
+
+        assertEquals(new Integer(14), v.evaluate());
+    }
+
+    @Test
+    public void astOtherComplexTest() {
+        Molang lang = new Molang("2 * 3 + 4");
+        RightValue<Integer> v = (RightValue<Integer>)lang.getAst();
+
+        assertEquals(new Integer(10), v.evaluate());
     }
 }

@@ -2,9 +2,9 @@ package Tokenizer;
 
 public class Token {
     private String value;
-    private TokenType type;
+    private ExpressionInfo type;
 
-    public Token(TokenType type, String value){
+    public Token(ExpressionInfo type, String value){
         this.type = type;
         this.value = value;
     }
@@ -13,7 +13,9 @@ public class Token {
         return value;
     }
 
-    public TokenType getType() {
+    public ExpressionInfo getType() {
         return type;
     }
+
+    public Integer getPriority(){ return type.getPriority(); }
 }

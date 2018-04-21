@@ -1,27 +1,22 @@
 package Expressions;
 
-import Tokenizer.TokenType;
-import java.util.function.Predicate;
+import Tokenizer.ExpressionInfo;
 
 public class Plus extends Operator<Integer>{
 
-    RightValue<Integer> left, right;
+    private static int priority = 1;
 
-    public Plus(RightValue<Integer> left, RightValue<Integer> right){
-        this.left = left;
-        this.right = right;
-    }
-
-    public static Predicate<String> getRecognizer(){
-        return x -> x.equals("+");
-    }
-
-    public static TokenType getTokenType(){
-        return TokenType.PLUS;
+    public static ExpressionInfo getTokenType(){
+        return new ExpressionInfo("Plus", priority, true, x -> x.equals("+"));
     }
 
     @Override
-    Integer evaluate() {
+    public Integer evaluate() {
         return left.evaluate() + right.evaluate();
+    }
+
+    @Override
+    public int getPriority() {
+        return priority;
     }
 }

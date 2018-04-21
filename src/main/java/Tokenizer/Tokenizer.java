@@ -1,5 +1,6 @@
 package Tokenizer;
 
+import Expressions.Multiply;
 import Expressions.Numliteral;
 import Expressions.Plus;
 
@@ -8,13 +9,14 @@ import java.util.function.Predicate;
 
 public class Tokenizer {
 
-    private Map<TokenType, Predicate<String>> recognizer = new HashMap<>();
+    private List<ExpressionInfo> expressionInfos = new ArrayList<>();
     {
-        recognizer.put(Numliteral.getTokenType(), Numliteral.getRecognizer());
-        recognizer.put(Plus.getTokenType(), Plus.getRecognizer());
+        expressionInfos.add(Numliteral.getTokenType());
+        expressionInfos.add(Plus.getTokenType());
+        expressionInfos.add(Multiply.getTokenType());
     }
 
-    private String seperators = "();[]{}";
+    private String seperators = "();[]{}+-*/";
 
     public List<Token> tokenize(String code){
         for(Character c : seperators.toCharArray())
@@ -24,10 +26,13 @@ public class Tokenizer {
 
         List<Token> tokens = new LinkedList<Token>();
         for(String item : items){
+            if(item.isEmpty())
+                continue;
+
             Boolean foundSomething = false;
-            for (Map.Entry<TokenType, Predicate<String>> entry : recognizer.entrySet()) {
-                if(entry.getValue().test(item)){
-                    tokens.add(new Token(entry.getKey(), item));
+            for (ExpressionInfo expInfo : expressionInfos) {
+                if(expInfo.match(item)){
+                    tokens.add(new Token(expInfo, item));
                     foundSomething = true;
                     break;
                 }
