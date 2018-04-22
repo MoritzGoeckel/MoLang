@@ -55,6 +55,9 @@ public class ExpressionFactory {
         if(type.equals(More.getTokenType()))
             return new More();
 
+        if(type.equals(End.getTokenType()))
+            return new End();
+
         throw new RuntimeException("Expression Name not found: " + type.getExpressionName());
     }
 }

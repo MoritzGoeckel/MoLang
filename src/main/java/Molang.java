@@ -4,24 +4,37 @@ import Tokenizer.*;
 import java.util.*;
 
 public class Molang {
-    private LinkedList<Expression> expressions;
+    private Procedure procedure;
     private Context context;
 
     public Molang(String code){
         Tokenizer tokenizer = new Tokenizer();
         LinkedList<Token> tokens = tokenizer.tokenize(code);
         context = new Context();
-        expressions = createExpressionList(tokens);
+        procedure = createProcedure(tokens);
     }
 
-    private LinkedList<Expression> createExpressionList(LinkedList<Token> tokens){
-        LinkedList<Expression> expressions = new LinkedList<>();
+    private Procedure createProcedure(LinkedList<Token> tokens){
         LinkedList<Token> latestTokens = new LinkedList<>();
+
+        Stack<Procedure> procedureStack = new Stack<>();
+        procedureStack.push(new Procedure());
 
         while (!tokens.isEmpty()) {
             Token currentToken = tokens.pop();
             if (currentToken.getType().equals(Seperator.getTokenType())){
-                expressions.add(createExpressionTree(latestTokens));
+                if(latestTokens.size() != 0) {
+                    Expression expression = createExpressionTree(latestTokens);
+
+                    if (isSibling(expression, End.class))
+                        procedureStack.pop();
+                    else
+                        procedureStack.peek().addExpression(expression);
+
+                    if (isSibling(expression, Procedure.class))
+                        procedureStack.push((Procedure) expression);
+                }
+
                 latestTokens.clear();
             }
             else {
@@ -30,18 +43,31 @@ public class Molang {
         }
 
         if(!latestTokens.isEmpty())
-            expressions.add(createExpressionTree(latestTokens));
+            throw new RuntimeException("Found leftover expressions: " + latestTokens);
 
-        return expressions;
+        if(procedureStack.size() != 1)
+            throw new RuntimeException("Procedure stack should be simplifiable to one: " + procedureStack.toString());
+
+        return procedureStack.pop();
     }
 
     private Expression createExpressionTree(LinkedList<Token> tokens){
-        ArrayList<Expression> expressionBacklog = new ArrayList<>();
 
-        while (!tokens.isEmpty())
+        if(tokens.size() == 0)
+            throw new RuntimeException("Tokens are empty");
+
+        if(tokens.getFirst().getType().equals(If.getTokenType())){
+            tokens.removeLast(); //Removing the then
+            return new If((RightValue<Boolean>) createExpressionTree(tokens));
+        }
+        else {
+            ArrayList<Expression> expressionBacklog = new ArrayList<>();
+
+            while (!tokens.isEmpty())
                 expressionBacklog.add(ExpressionFactory.createExpression(tokens.pop(), context));
 
-        return createExpressionTree(expressionBacklog);
+            return createExpressionTree(expressionBacklog);
+        }
     }
 
     private static boolean isSibling(Object child, Class parent){
@@ -127,12 +153,11 @@ public class Molang {
     }
 
     public void exec(){
-        for(Expression e : expressions)
-            e.execute();
+        procedure.execute();
     }
 
     public Object execLine(){
-        return ((RightValue)expressions.get(0)).evaluate();
+        return procedure.evaluateLine(0);
     }
 
     public Context getContext() {

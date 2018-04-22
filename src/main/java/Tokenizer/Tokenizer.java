@@ -24,10 +24,13 @@ public class Tokenizer {
         expressionInfos.add(PrecedenceBracketClose.getTokenType());
         expressionInfos.add(And.getTokenType());
         expressionInfos.add(Or.getTokenType());
-
         expressionInfos.add(More.getTokenType());
         expressionInfos.add(Less.getTokenType());
         expressionInfos.add(Equal.getTokenType());
+
+        expressionInfos.add(End.getTokenType());
+        expressionInfos.add(If.getTokenType());
+        expressionInfos.add(Then.getTokenType());
     }
 
     //Todo: Make it configurable
@@ -35,8 +38,16 @@ public class Tokenizer {
     private String[] separators = {"(", ")", ";", "[", "]", "{", "}", "+", "-", "*", "/", "==", "%", "||", "&&"};
 
     public LinkedList<Token> tokenize(String code){
+        //Preprocessing
         for(String c : separators)
             code = code.replace(c, " "+c+" ");
+
+        code = code.replace(" end", " end ;");
+        code = code.replace(" then", " then ;");
+
+        if(!code.endsWith(";"))
+            code += " ;";
+        //End preprocessing
 
         String[] items = code.split(" ");
 

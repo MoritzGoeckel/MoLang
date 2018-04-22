@@ -38,4 +38,9 @@ public class ExpressionInfo {
     public boolean isOperator() {
         return isOperator;
     }
+
+    @Override
+    public String toString() {
+        return expressionName;
+    }
 }

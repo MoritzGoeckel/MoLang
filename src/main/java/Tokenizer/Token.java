@@ -18,4 +18,9 @@ public class Token {
     }
 
     public Integer getPriority(){ return type.getPriority(); }
+
+    @Override
+    public String toString() {
+        return "Token["+getType()+ ": "+ value+"]";
+    }
 }
