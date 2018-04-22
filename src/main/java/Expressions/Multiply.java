@@ -7,7 +7,7 @@ public class Multiply extends Operator<Integer>{
     private static int priority = 2;
 
     public static ExpressionInfo getTokenType(){
-        return new ExpressionInfo("Multiply", priority, true, x -> x.equals("*"));
+        return new ExpressionInfo("Multiply", x -> x.equals("*"), priority, true);
     }
 
     @Override

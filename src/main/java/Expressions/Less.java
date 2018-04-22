@@ -7,7 +7,7 @@ public class Less extends Operator<Integer>{
     private static int priority = 1;
 
     public static ExpressionInfo getTokenType(){
-        return new ExpressionInfo("Less", priority, true, x -> x.equals("<"));
+        return new ExpressionInfo("Less", x -> x.equals("<"), priority, true);
     }
 
     @Override

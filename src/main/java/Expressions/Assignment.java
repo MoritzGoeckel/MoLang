@@ -4,10 +4,10 @@ import Tokenizer.ExpressionInfo;
 
 public class Assignment<T> extends Operator{
 
-    private static int priority = 0;
+    private static int priority = -1;
 
     public static ExpressionInfo getTokenType(){
-        return new ExpressionInfo("Assignment", priority, true, x -> x.equals("="));
+        return new ExpressionInfo("Assignment", x -> x.equals("="), priority, true, false);
     }
 
     @Override

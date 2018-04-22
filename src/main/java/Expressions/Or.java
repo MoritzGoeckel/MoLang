@@ -7,7 +7,7 @@ public class Or extends Operator<Boolean>{
     private static int priority = 1;
 
     public static ExpressionInfo getTokenType(){
-        return new ExpressionInfo("Or", priority, true, x -> x.equals("||"));
+        return new ExpressionInfo("Or", x -> x.equals("||"), priority, true);
     }
 
     @Override

@@ -11,7 +11,7 @@ public class Numliteral extends RightValue<Integer> {
     }
 
     public static ExpressionInfo getTokenType() {
-        return new ExpressionInfo("Numliteral", 0, false, x -> x.matches("[0-9]+"));
+        return new ExpressionInfo("Numliteral", x -> x.matches("[0-9]+"));
     }
 
     @Override

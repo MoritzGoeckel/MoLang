@@ -13,7 +13,7 @@ public class If extends Procedure{
     }
 
     public static ExpressionInfo getTokenType(){
-        return new ExpressionInfo("If", -1, false, x -> x.equals("if"));
+        return new ExpressionInfo("If", x -> x.equals("if"), -1, false, true);
     }
 
     @Override

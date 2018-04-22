@@ -5,7 +5,7 @@ import Tokenizer.ExpressionInfo;
 public class Do extends Expression{
 
     public static ExpressionInfo getTokenType(){
-        return new ExpressionInfo("Do", -1, false, x -> x.equals("do"));
+        return new ExpressionInfo("Do", x -> x.equals("do"));
     }
 
     @Override

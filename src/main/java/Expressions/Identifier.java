@@ -12,7 +12,7 @@ public class Identifier<T> extends LeftValue<T> {
     }
 
     public static ExpressionInfo getTokenType() {
-        return new ExpressionInfo("Identifier", 0, false, x -> x.matches("[a-zA-Z]+"));
+        return new ExpressionInfo("Identifier", x -> x.matches("[a-zA-Z]+"));
     }
 
     @Override

@@ -9,6 +9,7 @@ public class Molang {
 
     public Molang(String code){
         Tokenizer tokenizer = new Tokenizer();
+        code = tokenizer.preprocess(code);
         LinkedList<Token> tokens = tokenizer.tokenize(code);
         context = new Context();
         procedure = createProcedure(tokens);
@@ -52,17 +53,20 @@ public class Molang {
     }
 
     private Expression createExpressionTree(LinkedList<Token> tokens){
-
         if(tokens.size() == 0)
             throw new RuntimeException("Tokens are empty");
 
-        ExpressionInfo firstType = tokens.getFirst().getType();
-        if(firstType.equals(If.getTokenType()) || firstType.equals(While.getTokenType())){
+        if(tokens.getFirst().getType().isProcedure()){
             //Handling procedures
-            Token token = tokens.removeFirst(); //Removing the procedure name
-            if(!tokens.removeLast().getType().equals(Do.getTokenType())) //Removing the then
+
+            //Removing the procedure name
+            Token token = tokens.removeFirst();
+
+            //Removing the then
+            if(!tokens.removeLast().getType().equals(Do.getTokenType()))
                 throw new RuntimeException("Expected 'do' keyword");
 
+            //Creating the procedure node
             if(token.getType().equals(If.getTokenType()))
                 return new If((RightValue<Boolean>) createExpressionTree(tokens));
             else if(token.getType().equals(While.getTokenType()))
@@ -77,47 +81,13 @@ public class Molang {
             while (!tokens.isEmpty())
                 expressionBacklog.add(ExpressionFactory.createExpression(tokens.pop(), context));
 
-            return createExpressionTree(expressionBacklog);
+            return reduceExpressions(expressionBacklog);
         }
     }
 
-    private static boolean isSibling(Object child, Class parent){
-        return parent.isAssignableFrom(child.getClass());
-    }
-
-    private Expression createExpressionTree(ArrayList<Expression> expressionBacklog){
-
+    private Expression reduceExpressions(ArrayList<Expression> expressionBacklog){
         //Find brackets and reduce before
-        int openBrackets = 0;
-        int openingBracketIndex = -1;
-        ArrayList<Expression> innerExpressions = new ArrayList<>();
-        for(int i = 0; i < expressionBacklog.size(); i++) {
-            if (isSibling(expressionBacklog.get(i), PrecedenceBracketOpen.class)) {
-                openBrackets++;
-                if(openingBracketIndex == -1)
-                    openingBracketIndex = i;
-            }
-
-            if (isSibling(expressionBacklog.get(i), PrecedenceBracketClose.class)) {
-                openBrackets--;
-
-                if(openBrackets == 0 && innerExpressions.size() != 0){
-                    //Remove brackets
-                    expressionBacklog.remove(i);
-                    innerExpressions.remove(0);
-
-                    expressionBacklog.add(openingBracketIndex, createExpressionTree(innerExpressions));
-                    innerExpressions.clear();
-                    openingBracketIndex = -1;
-                }
-            }
-
-            if(openBrackets > 0){
-                innerExpressions.add(expressionBacklog.get(i));
-                expressionBacklog.remove(i);
-                i--;
-            }
-        }
+        expressionBacklog = processPrecedenceBrackets(expressionBacklog);
 
         //Reduce tree to one element
         while (expressionBacklog.size() > 1) {
@@ -125,23 +95,13 @@ public class Molang {
             for (int i = 0; i < expressionBacklog.size() && expressionBacklog.size() > 1; i++) {
                 Expression currentExpression = expressionBacklog.get(i);
 
+                //Process operator
                 if(isSibling(currentExpression, Operator.class)){
-
                     Operator currentOperator = (Operator)currentExpression;
                     if(!currentOperator.isComplete()) {
 
                         //Find next operator priority
-                        int nextOperatorPriority = -1;
-                        for (int a = i + 1; a < expressionBacklog.size(); a++) {
-                            Expression otherExpression = expressionBacklog.get(a);
-                            if (isSibling(otherExpression, Operator.class)) {
-                                Operator otherOperator = ((Operator) otherExpression);
-                                if(!otherOperator.isComplete()) {
-                                    nextOperatorPriority = otherOperator.getPriority();
-                                    break;
-                                }
-                            }
-                        }
+                        int nextOperatorPriority = getNextOperatorPriority(i, expressionBacklog);
 
                         //Do the operation
                         if (currentOperator.getPriority() >= nextOperatorPriority) {
@@ -161,6 +121,60 @@ public class Molang {
 
         //The expression backlog should be simplified to one element now
         return expressionBacklog.get(expressionBacklog.size() - 1);
+    }
+
+    private int getNextOperatorPriority(int startIndex, ArrayList<Expression> expressionBacklog) {
+        int nextOperatorPriority = -1;
+        for (int a = startIndex + 1; a < expressionBacklog.size(); a++) {
+            Expression otherExpression = expressionBacklog.get(a);
+            if (isSibling(otherExpression, Operator.class)) {
+                Operator otherOperator = ((Operator) otherExpression);
+                if(!otherOperator.isComplete()) {
+                    nextOperatorPriority = otherOperator.getPriority();
+                    break;
+                }
+            }
+        }
+        return nextOperatorPriority;
+    }
+
+    private ArrayList<Expression> processPrecedenceBrackets(ArrayList<Expression> expressionBacklog) {
+        int openBrackets = 0;
+        int openingBracketIndex = -1;
+        ArrayList<Expression> innerExpressions = new ArrayList<>();
+        for(int i = 0; i < expressionBacklog.size(); i++) {
+            if (isSibling(expressionBacklog.get(i), PrecedenceBracketOpen.class)) {
+                openBrackets++;
+                if(openingBracketIndex == -1)
+                    openingBracketIndex = i;
+            }
+
+            if (isSibling(expressionBacklog.get(i), PrecedenceBracketClose.class)) {
+                openBrackets--;
+
+                if(openBrackets == 0 && innerExpressions.size() != 0){
+                    //Remove brackets
+                    expressionBacklog.remove(i);
+                    innerExpressions.remove(0);
+
+                    expressionBacklog.add(openingBracketIndex, reduceExpressions(innerExpressions));
+                    innerExpressions.clear();
+                    openingBracketIndex = -1;
+                }
+            }
+
+            if(openBrackets > 0){
+                innerExpressions.add(expressionBacklog.get(i));
+                expressionBacklog.remove(i);
+                i--;
+            }
+        }
+
+        return expressionBacklog;
+    }
+
+    private static boolean isSibling(Object child, Class parent){
+        return parent.isAssignableFrom(child.getClass());
     }
 
     public void exec(){

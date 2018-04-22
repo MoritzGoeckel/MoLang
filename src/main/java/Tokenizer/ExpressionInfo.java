@@ -4,15 +4,29 @@ import java.util.function.Predicate;
 
 public class ExpressionInfo {
     private String expressionName;
-    private Integer priority;
     private Predicate<String> matcher;
-    private boolean isOperator;
 
-    public ExpressionInfo(String expressionName, Integer priority, boolean isOperator, Predicate<String> matcher) {
+    //Optional
+    private Integer priority = 0;
+    private boolean isOperator = false;
+    private boolean isProcedure = false;
+
+    public ExpressionInfo(String expressionName, Predicate<String> matcher) {
         this.expressionName = expressionName;
-        this.priority = priority;
         this.matcher = matcher;
+    }
+
+    public ExpressionInfo(String expressionName, Predicate<String> matcher, Integer priority, Boolean isOperator){
+        this(expressionName, matcher);
+        this.priority = priority;
         this.isOperator = isOperator;
+    }
+
+    public ExpressionInfo(String expressionName, Predicate<String> matcher, Integer priority, Boolean isOperator, Boolean isProcedure){
+        this(expressionName, matcher);
+        this.priority = priority;
+        this.isOperator = isOperator;
+        this.isProcedure = isProcedure;
     }
 
     public boolean match(String input){
@@ -42,5 +56,9 @@ public class ExpressionInfo {
     @Override
     public String toString() {
         return expressionName;
+    }
+
+    public boolean isProcedure() {
+        return isProcedure;
     }
 }

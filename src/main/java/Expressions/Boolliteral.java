@@ -11,7 +11,7 @@ public class Boolliteral extends RightValue<Boolean> {
     }
 
     public static ExpressionInfo getTokenType() {
-        return new ExpressionInfo("Boolliteral", 0, false, x -> x.equals("true") || x.equals("false"));
+        return new ExpressionInfo("Boolliteral", x -> x.equals("true") || x.equals("false"));
     }
 
     @Override

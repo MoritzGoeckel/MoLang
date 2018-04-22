@@ -7,7 +7,7 @@ public class And extends Operator<Boolean>{
     private static int priority = 1;
 
     public static ExpressionInfo getTokenType(){
-        return new ExpressionInfo("And", priority, true, x -> x.equals("&&"));
+        return new ExpressionInfo("And", x -> x.equals("&&"), priority, true);
     }
 
     @Override

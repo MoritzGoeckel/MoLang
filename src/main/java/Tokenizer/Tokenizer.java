@@ -40,19 +40,6 @@ public class Tokenizer {
     private String[] separators = {"(", ")", ";", "[", "]", "{", "}", "+", "-", "*", "/", "==", "%", "||", "&&"};
 
     public LinkedList<Token> tokenize(String code){
-        //Preprocessing
-        for(String c : separators)
-            code = code.replace(c, " "+c+" ");
-
-        code = code.replace(" end", " end ;");
-        code = code.replace(" then", " then ;");
-
-        if(!code.endsWith(";"))
-            code += " ;";
-
-        code = code.replace("\t", "");
-        //End preprocessing
-
         String[] items = code.split(" ");
 
         LinkedList<Token> tokens = new LinkedList<Token>();
@@ -74,5 +61,21 @@ public class Tokenizer {
         }
 
         return tokens;
+    }
+
+    public String preprocess(String code){
+        for(String c : separators)
+            code = code.replace(c, " "+c+" ");
+
+        code = code.replace(" end", " end ;");
+        code = code.replace(" then", " then ;");
+
+        if(!code.endsWith(";"))
+            code += " ;";
+
+        code = code.replace('\t', ' ');
+        code = code.replace('\n', ' ');
+
+        return code;
     }
 }

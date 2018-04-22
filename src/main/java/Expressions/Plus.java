@@ -7,7 +7,7 @@ public class Plus extends Operator<Integer>{
     private static int priority = 1;
 
     public static ExpressionInfo getTokenType(){
-        return new ExpressionInfo("Plus", priority, true, x -> x.equals("+"));
+        return new ExpressionInfo("Plus", x -> x.equals("+"), priority, true);
     }
 
     @Override

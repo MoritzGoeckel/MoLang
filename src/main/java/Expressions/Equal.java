@@ -7,7 +7,7 @@ public class Equal<T> extends Operator<T>{
     private static int priority = 1;
 
     public static ExpressionInfo getTokenType(){
-        return new ExpressionInfo("Equal", priority, true, x -> x.equals("=="));
+        return new ExpressionInfo("Equal", x -> x.equals("=="), priority, true);
     }
 
     @Override

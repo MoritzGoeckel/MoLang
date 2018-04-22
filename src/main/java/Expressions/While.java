@@ -11,7 +11,7 @@ public class While extends Procedure{
     }
 
     public static ExpressionInfo getTokenType(){
-        return new ExpressionInfo("While", -1, false, x -> x.equals("while"));
+        return new ExpressionInfo("While", x -> x.equals("while"), -1, false, true);
     }
 
     @Override

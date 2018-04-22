@@ -7,7 +7,7 @@ public class More extends Operator<Integer>{
     private static int priority = 1;
 
     public static ExpressionInfo getTokenType(){
-        return new ExpressionInfo("More", priority, true, x -> x.equals(">"));
+        return new ExpressionInfo("More", x -> x.equals(">"), priority, true);
     }
 
     @Override

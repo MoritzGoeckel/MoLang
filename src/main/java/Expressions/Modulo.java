@@ -7,7 +7,7 @@ public class Modulo extends Operator<Integer>{
     private static int priority = 2;
 
     public static ExpressionInfo getTokenType(){
-        return new ExpressionInfo("Modulo", priority, true, x -> x.equals("%"));
+        return new ExpressionInfo("Modulo", x -> x.equals("%"), priority, true);
     }
 
     @Override
