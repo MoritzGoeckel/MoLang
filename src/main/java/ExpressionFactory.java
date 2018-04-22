@@ -1,42 +1,42 @@
 import Expressions.*;
+import Tokenizer.ExpressionInfo;
 import Tokenizer.Token;
 
 public class ExpressionFactory {
-    public static Operator createOperatorExpr(Token token){
-        String name = token.getType().getExpressionName();
 
-        //Todo: Make it configurable
+    public static Expression createExpression(Token token, Context context){
+        ExpressionInfo type = token.getType();
 
-        if(name.equals(Plus.getTokenType().getExpressionName()))
+        if(type.equals(PrecedenceBracketOpen.getTokenType()))
+            return new PrecedenceBracketOpen();
+
+        if(type.equals(PrecedenceBracketClose.getTokenType()))
+            return new PrecedenceBracketClose();
+
+        if(type.equals(Plus.getTokenType()))
             return new Plus();
 
-        if(name.equals(Minus.getTokenType().getExpressionName()))
+        if(type.equals(Minus.getTokenType()))
             return new Minus();
 
-        if(name.equals(Multiply.getTokenType().getExpressionName()))
+        if(type.equals(Multiply.getTokenType()))
             return new Multiply();
 
-        if(name.equals(Assignment.getTokenType().getExpressionName()))
+        if(type.equals(Assignment.getTokenType()))
             return new Assignment();
 
-        if(name.equals(Divide.getTokenType().getExpressionName()))
+        if(type.equals(Divide.getTokenType()))
             return new Divide();
 
-        if(name.equals(Modulo.getTokenType().getExpressionName()))
+        if(type.equals(Modulo.getTokenType()))
             return new Modulo();
 
-        throw new RuntimeException("Operator Name not found: " + name);
-    }
-
-    public static RightValue createRightValueExpr(Token token, Context context){
-        String name = token.getType().getExpressionName();
-
-        if(name.equals(Numliteral.getTokenType().getExpressionName()))
+        if(type.equals(Numliteral.getTokenType()))
             return new Numliteral(token.getValue());
 
-        if(name.equals(Identifier.getTokenType().getExpressionName()))
+        if(type.equals(Identifier.getTokenType()))
             return context.getIdentifier(token.getValue());
 
-        throw new RuntimeException("Operator Name not found: " + name);
+        throw new RuntimeException("Expression Name not found: " + type.getExpressionName());
     }
 }

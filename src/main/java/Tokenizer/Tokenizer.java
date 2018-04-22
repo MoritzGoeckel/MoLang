@@ -17,6 +17,8 @@ public class Tokenizer {
         expressionInfos.add(Minus.getTokenType());
         expressionInfos.add(Modulo.getTokenType());
         expressionInfos.add(Divide.getTokenType());
+        expressionInfos.add(PrecedenceBracketOpen.getTokenType());
+        expressionInfos.add(PrecedenceBracketClose.getTokenType());
     }
 
     //Todo: Make it configurable

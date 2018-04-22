@@ -35,7 +35,7 @@ class BaseTests {
     @Test
     void astComplexTest() {
         executeTests(new String[][]{
-                {"1 * 2 + 3","5"},
+                {"4 * 2 + 3","11"},
                 {"2 + 3 * 4", "14"},
                 {"2 + 3 * 5 + 1", "18"},
                 {"2 * 3 * 4 + 2", "26"},
@@ -43,10 +43,31 @@ class BaseTests {
         });
     }
 
+    @Test
+    void precedenceBracketSimpleTest() {
+        executeTests(new String[][]{
+                {"1 * (2 + 3)","5"},
+                {"(2 + 3) * 4", "20"},
+                {"2 + (3 * 5) + 1", "18"},
+                {"(2 * 3) * (4 + 2)", "36"},
+        });
+    }
+
+    @Test
+    void precedenceBracketComplexTest() {
+        executeTests(new String[][]{
+                {"(2 + 3) + (4 * 3 * (2 + 1))", "41"},
+                {"(2 + 3)", "5"},
+                {"(2)", "2"},
+                {"((2))", "2"}
+        });
+    }
+
     private void executeTests(String[][] codes){
         for (String[] code : codes) {
             Molang lang = new Molang(code[0]);
-            assertEquals(new Integer(code[1]), lang.execLine());
+            Integer actual = lang.execLine();
+            assertEquals(new Integer(code[1]), actual, code[0] + " should be " + code[1] + " but was " + actual);
         }
     }
 

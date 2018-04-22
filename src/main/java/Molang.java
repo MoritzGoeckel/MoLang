@@ -1,7 +1,4 @@
-import Expressions.Expression;
-import Expressions.Operator;
-import Expressions.RightValue;
-import Expressions.Seperator;
+import Expressions.*;
 import Tokenizer.*;
 
 import java.util.*;
@@ -38,31 +35,70 @@ public class Molang {
         return expressions;
     }
 
-    private RightValue createExpressionTree(LinkedList<Token> tokens){
-        ArrayList<RightValue> expressionBacklog = new ArrayList<>();
+    private Expression createExpressionTree(LinkedList<Token> tokens){
+        ArrayList<Expression> expressionBacklog = new ArrayList<>();
 
-        while (!tokens.isEmpty()) {
-            Token currentToken = tokens.pop();
-            if (currentToken.getType().isOperator())
-                expressionBacklog.add(ExpressionFactory.createOperatorExpr(currentToken));
-            else
-                expressionBacklog.add(ExpressionFactory.createRightValueExpr(currentToken, context));
+        while (!tokens.isEmpty())
+                expressionBacklog.add(ExpressionFactory.createExpression(tokens.pop(), context));
+
+        return createExpressionTree(expressionBacklog);
+    }
+
+    private static boolean isSibling(Object child, Class parent){
+        return parent.isAssignableFrom(child.getClass());
+    }
+
+    private Expression createExpressionTree(ArrayList<Expression> expressionBacklog){
+
+        //Find brackets and reduce before
+
+        int openBrackets = 0;
+        int openingBracketIndex = -1;
+        ArrayList<Expression> innerExpressions = new ArrayList<>();
+        for(int i = 0; i < expressionBacklog.size(); i++) {
+            if (isSibling(expressionBacklog.get(i), PrecedenceBracketOpen.class)) {
+                openBrackets++;
+                if(openingBracketIndex == -1)
+                    openingBracketIndex = i;
+            }
+
+            if (isSibling(expressionBacklog.get(i), PrecedenceBracketClose.class)) {
+                openBrackets--;
+
+                if(openBrackets == 0 && innerExpressions.size() != 0){
+                    //Remove brackets
+                    expressionBacklog.remove(i);
+                    innerExpressions.remove(0);
+
+                    expressionBacklog.add(openingBracketIndex, createExpressionTree(innerExpressions));
+                    innerExpressions.clear();
+                    openingBracketIndex = -1;
+                }
+            }
+
+            if(openBrackets > 0){
+                innerExpressions.add(expressionBacklog.get(i));
+                expressionBacklog.remove(i);
+                i--;
+            }
         }
+
+        //Reduce tree
 
         while (expressionBacklog.size() > 1) {
             for (int i = 0; i < expressionBacklog.size() && expressionBacklog.size() > 1; i++) { //Todo: Should use iterator
                 Expression currentExpression = expressionBacklog.get(i);
-                if(Operator.class.isAssignableFrom(currentExpression.getClass())){
+
+                if(isSibling(currentExpression, Operator.class)){
 
                     Operator currentOperator = (Operator)currentExpression;
-
                     if(!currentOperator.isComplete()) {
 
                         //Find next operator priority
                         int nextOperatorPriority = -1;
                         for (int a = i + 1; a < expressionBacklog.size(); a++) {
                             Expression otherExpression = expressionBacklog.get(a);
-                            if (Operator.class.isAssignableFrom(otherExpression.getClass())) {
+                            if (isSibling(otherExpression, Operator.class)) {
                                 Operator otherOperator = ((Operator) otherExpression);
                                 if(!otherOperator.isComplete()) {
                                     nextOperatorPriority = otherOperator.getPriority();
@@ -73,8 +109,8 @@ public class Molang {
 
                         //Do the operation
                         if (currentOperator.getPriority() >= nextOperatorPriority) {
-                            RightValue left = expressionBacklog.get(i - 1);
-                            RightValue right = expressionBacklog.get(i + 1);
+                            RightValue left = (RightValue) expressionBacklog.get(i - 1);
+                            RightValue right = (RightValue)expressionBacklog.get(i + 1);
                             currentOperator.assign(left, right);
 
                             expressionBacklog.remove(i - 1);
