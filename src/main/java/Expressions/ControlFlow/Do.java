@@ -1,4 +1,4 @@
-package Expressions.Controlflow;
+package Expressions.ControlFlow;
 
 import Expressions.Expression;
 import Tokenizer.ExpressionInfo;

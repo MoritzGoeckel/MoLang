@@ -1,5 +1,5 @@
 import Expressions.*;
-import Expressions.Controlflow.End;
+import Expressions.ControlFlow.End;
 import Expressions.Values.Boolliteral;
 import Expressions.Values.Identifier;
 import Expressions.Values.Numliteral;

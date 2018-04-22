@@ -1,5 +1,5 @@
 import Expressions.*;
-import Expressions.Controlflow.*;
+import Expressions.ControlFlow.*;
 import Expressions.Markers.PrecedenceBracketClose;
 import Expressions.Markers.PrecedenceBracketOpen;
 import Expressions.Markers.Seperator;
@@ -192,5 +192,9 @@ public class Molang {
 
     public Context getContext() {
         return context;
+    }
+
+    public void resetContext(){
+        this.context = new Context();
     }
 }

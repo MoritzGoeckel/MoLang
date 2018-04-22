@@ -1,9 +1,9 @@
 package Tokenizer;
 
-import Expressions.Controlflow.Do;
-import Expressions.Controlflow.End;
-import Expressions.Controlflow.If;
-import Expressions.Controlflow.While;
+import Expressions.ControlFlow.Do;
+import Expressions.ControlFlow.End;
+import Expressions.ControlFlow.If;
+import Expressions.ControlFlow.While;
 import Expressions.Values.Boolliteral;
 import Expressions.Values.Identifier;
 import Expressions.Values.Numliteral;

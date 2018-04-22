@@ -1,23 +1,23 @@
-package Expressions.Controlflow;
+package Expressions.ControlFlow;
 
 import Expressions.RightValue;
 import Tokenizer.ExpressionInfo;
 
-public class While extends Procedure{
+public class If extends Procedure{
 
     private RightValue<Boolean> condition;
 
-    public While(RightValue<Boolean> condition) {
+    public If(RightValue<Boolean> condition) {
         this.condition = condition;
     }
 
     public static ExpressionInfo getTokenType(){
-        return new ExpressionInfo("While", x -> x.equals("while"), -1, false, true);
+        return new ExpressionInfo("If", x -> x.equals("if"), -1, false, true);
     }
 
     @Override
     public void execute() {
-        while (condition.evaluate())
+        if(condition.evaluate())
             super.execute();
     }
 }
