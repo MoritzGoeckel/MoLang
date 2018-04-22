@@ -1,5 +1,5 @@
 # Molang
-This is an fully home made interpreter for an c like language. I build this solely for educational purpose, so maybe you should not use this in production :)
+This is an fully home made interpreter for a c like language. I build this solely for educational purpose, so maybe you should not use this in production :horse:
 
 ## Example code
 ```

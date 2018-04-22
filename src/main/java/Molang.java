@@ -60,8 +60,8 @@ public class Molang {
 
                 if (currentOperator.getPriority() >= nextOperatorPriority) {
                     RightValue left = valueBacklog.get(i);
-                    RightValue righ = valueBacklog.get(i + 1);
-                    currentOperator.assign(left, righ);
+                    RightValue right = valueBacklog.get(i + 1);
+                    currentOperator.assign(left, right);
 
                     valueBacklog.remove(i + 1);
                     valueBacklog.add(i + 1, currentOperator);

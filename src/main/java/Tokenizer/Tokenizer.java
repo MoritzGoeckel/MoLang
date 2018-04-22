@@ -1,10 +1,7 @@
 package Tokenizer;
 
 import Expressions.*;
-
-import javax.crypto.SealedObject;
 import java.util.*;
-import java.util.function.Predicate;
 
 public class Tokenizer {
 
