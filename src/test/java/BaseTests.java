@@ -136,6 +136,22 @@ class BaseTests {
     }
 
     @Test
+    void ifTest() {
+        Molang lang = new Molang("if 2 < 3 do; a = 20; b = 21; end; c = 90; if 2 > 3 do; a = 10; b = 11; end;");
+        lang.exec();
+        assertEquals(20, lang.getContext().getIdentifier("a").evaluate());
+        assertEquals(21, lang.getContext().getIdentifier("b").evaluate());
+        assertEquals(90, lang.getContext().getIdentifier("c").evaluate());
+    }
+
+    @Test
+    void whileTest() {
+        Molang lang = new Molang("a = 0; while a < 10 do; a = a + 3; end;");
+        lang.exec();
+        assertEquals(12, lang.getContext().getIdentifier("a").evaluate());
+    }
+
+    @Test
     void multilineComplexTest() {
         Molang lang = new Molang("a = 10 * 30 + 3; b = a / 3; c = (10 + 3) * a;");
         lang.exec();

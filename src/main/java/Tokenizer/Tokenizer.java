@@ -10,11 +10,14 @@ public class Tokenizer {
         //Todo: Make it configurable
 
         expressionInfos.add(Boolliteral.getTokenType()); //Needs to be before identifier
+        expressionInfos.add(End.getTokenType());
+        expressionInfos.add(If.getTokenType());
+        expressionInfos.add(Do.getTokenType());
+        expressionInfos.add(While.getTokenType());
 
         expressionInfos.add(Numliteral.getTokenType());
         expressionInfos.add(Plus.getTokenType());
         expressionInfos.add(Multiply.getTokenType());
-        expressionInfos.add(Identifier.getTokenType());
         expressionInfos.add(Assignment.getTokenType());
         expressionInfos.add(Seperator.getTokenType());
         expressionInfos.add(Minus.getTokenType());
@@ -28,9 +31,8 @@ public class Tokenizer {
         expressionInfos.add(Less.getTokenType());
         expressionInfos.add(Equal.getTokenType());
 
-        expressionInfos.add(End.getTokenType());
-        expressionInfos.add(If.getTokenType());
-        expressionInfos.add(Then.getTokenType());
+        //Needs to be way down
+        expressionInfos.add(Identifier.getTokenType());
     }
 
     //Todo: Make it configurable
@@ -47,6 +49,8 @@ public class Tokenizer {
 
         if(!code.endsWith(";"))
             code += " ;";
+
+        code = code.replace("\t", "");
         //End preprocessing
 
         String[] items = code.split(" ");

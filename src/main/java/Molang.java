@@ -56,11 +56,22 @@ public class Molang {
         if(tokens.size() == 0)
             throw new RuntimeException("Tokens are empty");
 
-        if(tokens.getFirst().getType().equals(If.getTokenType())){
-            tokens.removeLast(); //Removing the then
-            return new If((RightValue<Boolean>) createExpressionTree(tokens));
+        ExpressionInfo firstType = tokens.getFirst().getType();
+        if(firstType.equals(If.getTokenType()) || firstType.equals(While.getTokenType())){
+            //Handling procedures
+            Token token = tokens.removeFirst(); //Removing the procedure name
+            if(!tokens.removeLast().getType().equals(Do.getTokenType())) //Removing the then
+                throw new RuntimeException("Expected 'do' keyword");
+
+            if(token.getType().equals(If.getTokenType()))
+                return new If((RightValue<Boolean>) createExpressionTree(tokens));
+            else if(token.getType().equals(While.getTokenType()))
+                return new While((RightValue<Boolean>) createExpressionTree(tokens));
+
+            throw new RuntimeException("Could not find procedure class: " + token.getType());
         }
         else {
+            //Handling normal expressions
             ArrayList<Expression> expressionBacklog = new ArrayList<>();
 
             while (!tokens.isEmpty())

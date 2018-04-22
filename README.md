@@ -8,6 +8,16 @@ b = a / 3;
 c = (10 + 3) * a;
 d = a == b;
 e = a < 10;
+
+if e == false do
+    c = 0;
+end
+
+f = 0;
+while f < 10 do
+    f = f + 3;
+end
+
 ```
 
 ## Features
@@ -20,10 +30,10 @@ e = a < 10;
 - [x] Brackets for changing precedence
 - [x] Bool type
 - [x] Comparisons
-- [ ] Jumps (if, else etc.)
-- [ ] Loops
-- [ ] Scope
+- [x] Jumps (if)
+- [x] Loops (while)
 - [ ] Functions
+- [ ] Scope
 - [ ] Unary operators
 - [ ] String type
 

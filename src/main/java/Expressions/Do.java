@@ -2,10 +2,10 @@ package Expressions;
 
 import Tokenizer.ExpressionInfo;
 
-public class Then extends Expression{
+public class Do extends Expression{
 
     public static ExpressionInfo getTokenType(){
-        return new ExpressionInfo("Then", -1, false, x -> x.equals("then"));
+        return new ExpressionInfo("Do", -1, false, x -> x.equals("do"));
     }
 
     @Override
