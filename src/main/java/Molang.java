@@ -39,42 +39,56 @@ public class Molang {
     }
 
     private RightValue createExpressionTree(LinkedList<Token> tokens){
-        LinkedList<Operator> operatorBacklog = new LinkedList<>();
-        LinkedList<RightValue> valueBacklog = new LinkedList<>();
+        ArrayList<RightValue> expressionBacklog = new ArrayList<>();
 
         while (!tokens.isEmpty()) {
             Token currentToken = tokens.pop();
             if (currentToken.getType().isOperator())
-                operatorBacklog.add(ExpressionFactory.createOperatorExpr(currentToken));
+                expressionBacklog.add(ExpressionFactory.createOperatorExpr(currentToken));
             else
-                valueBacklog.add(ExpressionFactory.createRightValueExpr(currentToken, context));
+                expressionBacklog.add(ExpressionFactory.createRightValueExpr(currentToken, context));
         }
 
-        while (valueBacklog.size() > 1) {
-            for (int i = 0; i < operatorBacklog.size(); i++) {
-                Operator currentOperator = operatorBacklog.get(i);
-                int nextOperatorPriority = -1;
-                if (operatorBacklog.size() > i + 1) {
-                    nextOperatorPriority = operatorBacklog.get(i + 1).getPriority();
+        while (expressionBacklog.size() > 1) {
+            for (int i = 0; i < expressionBacklog.size() && expressionBacklog.size() > 1; i++) { //Todo: Should use iterator
+                Expression currentExpression = expressionBacklog.get(i);
+                if(Operator.class.isAssignableFrom(currentExpression.getClass())){
+
+                    Operator currentOperator = (Operator)currentExpression;
+
+                    if(!currentOperator.isComplete()) {
+
+                        //Find next operator priority
+                        int nextOperatorPriority = -1;
+                        for (int a = i + 1; a < expressionBacklog.size(); a++) {
+                            Expression otherExpression = expressionBacklog.get(a);
+                            if (Operator.class.isAssignableFrom(otherExpression.getClass())) {
+                                Operator otherOperator = ((Operator) otherExpression);
+                                if(!otherOperator.isComplete()) {
+                                    nextOperatorPriority = otherOperator.getPriority();
+                                    break;
+                                }
+                            }
+                        }
+
+                        //Do the operation
+                        if (currentOperator.getPriority() >= nextOperatorPriority) {
+                            RightValue left = expressionBacklog.get(i - 1);
+                            RightValue right = expressionBacklog.get(i + 1);
+                            currentOperator.assign(left, right);
+
+                            expressionBacklog.remove(i - 1);
+                            expressionBacklog.remove(i); //Former i + 1
+
+                            i--;
+                        }
+                    }
                 }
 
-                if (currentOperator.getPriority() >= nextOperatorPriority) {
-                    RightValue left = valueBacklog.get(i);
-                    RightValue right = valueBacklog.get(i + 1);
-                    currentOperator.assign(left, right);
-
-                    valueBacklog.remove(i + 1);
-                    valueBacklog.add(i + 1, currentOperator);
-
-                    operatorBacklog.remove(i);
-                    valueBacklog.remove(i);
-
-                    i--;
-                }
             }
         }
 
-        return valueBacklog.pop();
+        return expressionBacklog.get(expressionBacklog.size() - 1);
     }
 
     public void exec(){

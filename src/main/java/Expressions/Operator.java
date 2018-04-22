@@ -8,5 +8,9 @@ public abstract class Operator<T> extends RightValue {
         this.right = right;
     }
 
+    public boolean isComplete(){
+        return left != null && right != null;
+    }
+
     public abstract int getPriority();
 }
