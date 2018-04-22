@@ -5,6 +5,7 @@ This is an fully home made interpreter for a c like language. I build this solel
 ```
 a = 10 * 30 + 1;
 b = a / 3;
+c = (10 + 3) * a;
 ```
 
 ## Features
@@ -14,13 +15,13 @@ b = a / 3;
 - [x] Variables
 - [x] Number literals (1, 2, 3 etc.)
 - [x] Multiline programs (seperated by ';')
-- [ ] Brackets for changing precedence
+- [x] Brackets for changing precedence
 - [ ] Bool type
-- [ ] String type
 - [ ] Jumps (if, else etc.)
 - [ ] Loops
 - [ ] Scope
 - [ ] Functions
+- [ ] String type
 
 ## Usage in Java
 ``` java
