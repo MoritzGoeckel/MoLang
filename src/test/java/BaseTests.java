@@ -94,12 +94,41 @@ class BaseTests {
     }
 
     @Test
+    void booleanTest() {
+        Molang lang = new Molang("a = true; b = false;");
+        lang.exec();
+        assertEquals(true, lang.getContext().getIdentifier("a").evaluate());
+        assertEquals(false, lang.getContext().getIdentifier("b").evaluate());
+    }
+
+    @Test
+    void booleanComplexTest() {
+        Molang lang = new Molang("a = true; b = false; c = a && b; d = false || a;");
+        lang.exec();
+        assertEquals(true, lang.getContext().getIdentifier("a").evaluate());
+        assertEquals(false, lang.getContext().getIdentifier("b").evaluate());
+        assertEquals(false, lang.getContext().getIdentifier("c").evaluate());
+        assertEquals(true, lang.getContext().getIdentifier("d").evaluate());
+    }
+
+    @Test
+    void comparisonTest() {
+        Molang lang = new Molang("a = 10 > 11; b = 11 > 10; c = 10 < 11; d = 11 < 10; e = 10 == 11; f = 10 == 10;");
+        lang.exec();
+        assertEquals(false, lang.getContext().getIdentifier("a").evaluate());
+        assertEquals(true, lang.getContext().getIdentifier("b").evaluate());
+        assertEquals(true, lang.getContext().getIdentifier("c").evaluate());
+        assertEquals(false, lang.getContext().getIdentifier("d").evaluate());
+        assertEquals(false, lang.getContext().getIdentifier("e").evaluate());
+        assertEquals(true, lang.getContext().getIdentifier("f").evaluate());
+    }
+
+    @Test
     void multilineComplexTest() {
         Molang lang = new Molang("a = 10 * 30 + 3; b = a / 3; c = (10 + 3) * a;");
         lang.exec();
         assertEquals(303, lang.getContext().getIdentifier("a").evaluate());
         assertEquals(101, lang.getContext().getIdentifier("b").evaluate());
         assertEquals(13 * 303, lang.getContext().getIdentifier("c").evaluate());
-
     }
 }

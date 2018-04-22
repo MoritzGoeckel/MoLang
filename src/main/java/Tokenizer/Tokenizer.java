@@ -8,6 +8,9 @@ public class Tokenizer {
     private List<ExpressionInfo> expressionInfos = new ArrayList<>();
     {
         //Todo: Make it configurable
+
+        expressionInfos.add(Boolliteral.getTokenType()); //Needs to be before identifier
+
         expressionInfos.add(Numliteral.getTokenType());
         expressionInfos.add(Plus.getTokenType());
         expressionInfos.add(Multiply.getTokenType());
@@ -19,14 +22,21 @@ public class Tokenizer {
         expressionInfos.add(Divide.getTokenType());
         expressionInfos.add(PrecedenceBracketOpen.getTokenType());
         expressionInfos.add(PrecedenceBracketClose.getTokenType());
+        expressionInfos.add(And.getTokenType());
+        expressionInfos.add(Or.getTokenType());
+
+        expressionInfos.add(More.getTokenType());
+        expressionInfos.add(Less.getTokenType());
+        expressionInfos.add(Equal.getTokenType());
     }
 
     //Todo: Make it configurable
-    private String separators = "();[]{}+-*/=%";
+    //Todo: Problem with =, does not get seperated yet
+    private String[] separators = {"(", ")", ";", "[", "]", "{", "}", "+", "-", "*", "/", "==", "%", "||", "&&"};
 
     public LinkedList<Token> tokenize(String code){
-        for(Character c : separators.toCharArray())
-            code = code.replace(c.toString(), " "+c.toString()+" ");
+        for(String c : separators)
+            code = code.replace(c, " "+c+" ");
 
         String[] items = code.split(" ");
 
