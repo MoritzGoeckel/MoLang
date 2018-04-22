@@ -24,6 +24,7 @@ e = a < 10;
 - [ ] Loops
 - [ ] Scope
 - [ ] Functions
+- [ ] Unary operators
 - [ ] String type
 
 ## Usage in Java

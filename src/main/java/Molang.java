@@ -51,7 +51,6 @@ public class Molang {
     private Expression createExpressionTree(ArrayList<Expression> expressionBacklog){
 
         //Find brackets and reduce before
-
         int openBrackets = 0;
         int openingBracketIndex = -1;
         ArrayList<Expression> innerExpressions = new ArrayList<>();
@@ -83,10 +82,10 @@ public class Molang {
             }
         }
 
-        //Reduce tree
-
+        //Reduce tree to one element
         while (expressionBacklog.size() > 1) {
-            for (int i = 0; i < expressionBacklog.size() && expressionBacklog.size() > 1; i++) { //Todo: Should use iterator
+            //Todo: Should use iterator
+            for (int i = 0; i < expressionBacklog.size() && expressionBacklog.size() > 1; i++) {
                 Expression currentExpression = expressionBacklog.get(i);
 
                 if(isSibling(currentExpression, Operator.class)){
@@ -120,10 +119,10 @@ public class Molang {
                         }
                     }
                 }
-
             }
         }
 
+        //The expression backlog should be simplified to one element now
         return expressionBacklog.get(expressionBacklog.size() - 1);
     }
 

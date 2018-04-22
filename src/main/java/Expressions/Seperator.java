@@ -9,7 +9,5 @@ public class Seperator extends Expression{
     }
 
     @Override
-    public void execute() {
-
-    }
+    public void execute() { } //This will not happen
 }
