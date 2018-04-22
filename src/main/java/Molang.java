@@ -132,8 +132,8 @@ public class Molang {
             e.execute();
     }
 
-    public Integer execLine(){
-        return (Integer)((RightValue)expressions.get(0)).evaluate();
+    public Object execLine(){
+        return ((RightValue)expressions.get(0)).evaluate();
     }
 
     public Context getContext() {

@@ -66,8 +66,8 @@ class BaseTests {
     private void executeTests(String[][] codes){
         for (String[] code : codes) {
             Molang lang = new Molang(code[0]);
-            Integer actual = lang.execLine();
-            assertEquals(new Integer(code[1]), actual, code[0] + " should be " + code[1] + " but was " + actual);
+            Object actual = lang.execLine();
+            assertEquals(code[1], actual.toString(), code[0] + " should be " + code[1] + " but was " + actual);
         }
     }
 
@@ -112,15 +112,27 @@ class BaseTests {
     }
 
     @Test
-    void comparisonTest() {
-        Molang lang = new Molang("a = 10 > 11; b = 11 > 10; c = 10 < 11; d = 11 < 10; e = 10 == 11; f = 10 == 10;");
-        lang.exec();
-        assertEquals(false, lang.getContext().getIdentifier("a").evaluate());
-        assertEquals(true, lang.getContext().getIdentifier("b").evaluate());
-        assertEquals(true, lang.getContext().getIdentifier("c").evaluate());
-        assertEquals(false, lang.getContext().getIdentifier("d").evaluate());
-        assertEquals(false, lang.getContext().getIdentifier("e").evaluate());
-        assertEquals(true, lang.getContext().getIdentifier("f").evaluate());
+    void comparisonIntegerTest() {
+        executeTests(new String[][]{
+                {"10 > 11", "false"},
+                {"11 > 10", "true"},
+                {"10 < 11", "true"},
+                {"11 < 10", "false"},
+                {"10 == 11", "false"},
+                {"10 == 10", "true"}
+        });
+    }
+
+    @Test
+    void comparisonBooleanTest() {
+        executeTests(new String[][]{
+                {"false && false", "false"},
+                {"false && true", "false"},
+                {"true || false", "true"},
+                {"false || false", "false"},
+                {"true == true", "true"},
+                {"false == false", "true"}
+        });
     }
 
     @Test

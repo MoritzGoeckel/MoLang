@@ -6,6 +6,8 @@ This is an fully home made interpreter for a c like language. I build this solel
 a = 10 * 30 + 1;
 b = a / 3;
 c = (10 + 3) * a;
+d = a == b;
+e = a < 10;
 ```
 
 ## Features
@@ -16,7 +18,8 @@ c = (10 + 3) * a;
 - [x] Number literals (1, 2, 3 etc.)
 - [x] Multiline programs (seperated by ';')
 - [x] Brackets for changing precedence
-- [ ] Bool type
+- [x] Bool type
+- [x] Comparisons
 - [ ] Jumps (if, else etc.)
 - [ ] Loops
 - [ ] Scope
@@ -33,7 +36,7 @@ assertEquals(101, lang.getContext().getIdentifier("b").evaluate());
 ```
 
 ## Tests
-The entire project is unit tested with JUnit 5 and the current line coverage is 92%.
+The entire project is unit tested with JUnit 5 and the current line coverage is 94%.
 
 ### Assembly like interpreter
 If you like interpreters you might check out my [Assembly like interpreter](https://github.com/MoritzGoeckel/Assembly-ish-Interpreter) written in Node.js
