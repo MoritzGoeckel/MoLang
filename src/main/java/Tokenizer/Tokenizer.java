@@ -1,6 +1,17 @@
 package Tokenizer;
 
-import Expressions.*;
+import Expressions.Controlflow.Do;
+import Expressions.Controlflow.End;
+import Expressions.Controlflow.If;
+import Expressions.Controlflow.While;
+import Expressions.Values.Boolliteral;
+import Expressions.Values.Identifier;
+import Expressions.Values.Numliteral;
+import Expressions.Markers.PrecedenceBracketClose;
+import Expressions.Markers.PrecedenceBracketOpen;
+import Expressions.Markers.Seperator;
+import Expressions.Operators.*;
+
 import java.util.*;
 
 public class Tokenizer {
