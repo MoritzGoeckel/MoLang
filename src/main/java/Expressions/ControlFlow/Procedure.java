@@ -1,14 +1,13 @@
-package Expressions.ControlFlow;
+package Expressions.ControlFlow; //Todo: Need other package
 
 import Expressions.Expression;
 import Expressions.RightValue;
 import Util.Scope;
 
 import java.util.LinkedList;
-import java.util.List;
 
 public class Procedure extends RightValue {
-    private List<Expression> expressionList;
+    private LinkedList<Expression> expressionList;
     private Scope scope;
 
     public Procedure(Scope parent){

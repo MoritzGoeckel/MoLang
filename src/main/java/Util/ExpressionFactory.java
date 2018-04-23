@@ -1,13 +1,12 @@
 package Util;
 
 import Expressions.*;
-import Expressions.Markers.ProcedureBracketsClose;
-import Expressions.Markers.ProcedureBracketsOpen;
+import Expressions.ControlFlow.If;
+import Expressions.ControlFlow.While;
+import Expressions.Markers.*;
 import Expressions.Values.Boolliteral;
 import Expressions.Values.Identifier;
 import Expressions.Values.Numliteral;
-import Expressions.Markers.PrecedenceBracketClose;
-import Expressions.Markers.PrecedenceBracketOpen;
 import Expressions.Operators.*;
 import Tokenizer.ExpressionInfo;
 import Tokenizer.Token;
@@ -69,7 +68,16 @@ public class ExpressionFactory {
             return new ProcedureBracketsClose();
 
         if(type.equals(ProcedureBracketsOpen.getTokenType()))
-            return new ProcedureBracketsOpen(scope);
+            return new ProcedureBracketsOpen();
+
+        if(type.equals(Seperator.getTokenType()))
+            return new Seperator();
+
+        if(type.equals(While.getTokenType()))
+            return new While();
+
+        if(type.equals(If.getTokenType()))
+            return new If();
 
         throw new RuntimeException("Expression Name not found: " + type.getExpressionName());
     }

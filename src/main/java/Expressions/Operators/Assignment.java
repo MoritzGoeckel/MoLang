@@ -1,5 +1,6 @@
 package Expressions.Operators;
 
+import Expressions.ControlFlow.Procedure;
 import Expressions.Values.Identifier;
 import Expressions.RightValue;
 import Tokenizer.ExpressionInfo;
@@ -14,7 +15,15 @@ public class Assignment<T> extends Operator {
 
     @Override
     public T evaluate() {
-        T value = ((RightValue<T>)right).evaluate();
+
+        T value = null;
+
+        //Lazy evaluation
+        if(right.getClass() == Procedure.class)
+            value = (T)right;
+        else
+            value = ((RightValue<T>)right).evaluate();
+
         ((Identifier)left).assign(value);
         return value;
     }

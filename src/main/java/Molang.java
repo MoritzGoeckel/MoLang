@@ -15,49 +15,73 @@ public class Molang {
         Tokenizer tokenizer = new Tokenizer();
         code = tokenizer.preprocess(code);
         LinkedList<Token> tokens = tokenizer.tokenize(code);
+        tokens = tokenizer.postprocess(tokens);
         procedure = createProcedure(tokens);
     }
 
-    private Procedure createProcedure(LinkedList<Token> tokens){
-        LinkedList<Token> latestTokens = new LinkedList<>();
+    /*//Todo: should that be here?
+        if(!expressionList.isEmpty() && isSibling(expressionList.getLast(), Conditional.class))
+            ((Conditional)expressionList.getLast()).assignBody(expression);
+        else*/
 
+    private Procedure createProcedure(LinkedList<Token> tokens){
         Stack<Procedure> procedureStack = new Stack<>();
-        procedureStack.push(new Procedure(null));
+        Stack<LinkedList<Expression>> expressionsPerProcedureStack = new Stack<>();
 
         while (!tokens.isEmpty()) {
             Token currentToken = tokens.pop();
-            if (currentToken.getType().equals(Seperator.getTokenType())){
-                if(latestTokens.size() != 0) {
+            if(currentToken.getType().equals(ProcedureBracketsOpen.getTokenType())){
 
-                    //Handle ; separated statement
-                    Expression expression = createExpressionTree(latestTokens, procedureStack.peek().getScope());
+                Scope parentScope = null;
+                if(!procedureStack.isEmpty())
+                    parentScope = procedureStack.peek().getScope();
 
-                    if (isSibling(expression, ProcedureBracketsClose.class))
-                        procedureStack.pop();
-                    else
-                        procedureStack.peek().addExpression(expression);
+                procedureStack.push(new Procedure(parentScope));
+                expressionsPerProcedureStack.push(new LinkedList<>());
 
-                    if (isSibling(expression, Procedure.class))
-                        procedureStack.push((Procedure) expression);
+            }else if(currentToken.getType().equals(ProcedureBracketsClose.getTokenType())){
+                Procedure procedure = procedureStack.pop();
 
-                    latestTokens.clear();
+                LinkedList<Expression> expressions = expressionsPerProcedureStack.pop();
+                List<Expression> statements = getStatementList(expressions);
+                for(Expression statement : statements)
+                    procedure.addExpression(statement);
+
+                if(!procedureStack.isEmpty()) {
+                    expressionsPerProcedureStack.peek().add(procedure);
+                    expressionsPerProcedureStack.peek().add(new Seperator()); //Todo: Maybe?
                 }
+                else
+                    return procedure;
             }
-            else {
-                latestTokens.add(currentToken);
+            else{
+                expressionsPerProcedureStack.peek().add(ExpressionFactory.createExpression(currentToken, procedureStack.peek().getScope()));
             }
         }
 
-        if(!latestTokens.isEmpty())
-            throw new RuntimeException("Found leftover expressions: " + latestTokens);
-
-        if(procedureStack.size() != 1)
-            throw new RuntimeException("Procedure stack should be simplifiable to one: " + procedureStack.toString());
-
-        return procedureStack.pop();
+        throw new RuntimeException("Procedure stack should be simplifiable to one: " + procedureStack.toString());
     }
 
-    private Expression createExpressionTree(LinkedList<Token> tokens, Scope scope){
+    private static LinkedList<Expression> getStatementList(LinkedList<Expression> expressions){
+        LinkedList<Expression> statements = new LinkedList<>();
+        ArrayList<Expression> latestExpressions = new ArrayList<>();
+
+        for(Expression e:expressions){
+            if(isSibling(e, Seperator.class)) {
+                statements.add(reduceExpressions(latestExpressions));
+                latestExpressions.clear();
+            }
+            else
+                latestExpressions.add(e);
+        }
+
+        if(!latestExpressions.isEmpty())
+            throw new RuntimeException("Some expressions have not been concluded by an statement separator");
+
+        return statements;
+    }
+
+    /*private static Expression createExpressionTree(LinkedList<Token> tokens, Scope scope){
         if(tokens.size() == 0)
             throw new RuntimeException("Tokens are empty");
 
@@ -66,18 +90,11 @@ public class Molang {
             //Removing the procedure opener
             Token token = tokens.removeFirst();
 
-            //Removing the do
-            if(token.getType().equals(If.getTokenType()) || token.getType().equals(While.getTokenType()))
-                if(!tokens.removeLast().getType().equals(ProcedureBracketsOpen.getTokenType()))
-                    throw new RuntimeException("Expected '{' keyword");
-
             //Creating the procedure node
             if(token.getType().equals(If.getTokenType()))
-                return new If((RightValue<Boolean>) createExpressionTree(tokens, scope), scope);
+                return new If((RightValue<Boolean>) createExpressionTree(tokens, scope));
             else if(token.getType().equals(While.getTokenType()))
-                return new While((RightValue<Boolean>) createExpressionTree(tokens, scope), scope);
-            else if(token.getType().equals(ProcedureBracketsOpen.getTokenType()))
-                return new Procedure(scope);
+                return new While((RightValue<Boolean>) createExpressionTree(tokens, scope));
 
             throw new RuntimeException("Could not find procedure class: " + token.getType());
         }
@@ -89,9 +106,25 @@ public class Molang {
 
             return reduceExpressions(expressionBacklog);
         }
-    }
+    }*/
 
-    private Expression reduceExpressions(ArrayList<Expression> expressionBacklog){
+    private static Expression reduceExpressions(ArrayList<Expression> expressionBacklog){
+
+        if(isSibling(expressionBacklog.get(0), Conditional.class)){
+            Conditional conditional = (Conditional) expressionBacklog.get(0);
+            expressionBacklog.remove(0);
+
+            int lastIndex = expressionBacklog.size() - 1;
+            Procedure body = (Procedure) expressionBacklog.get(lastIndex);
+            expressionBacklog.remove(lastIndex);
+
+            RightValue<Boolean> condition = (RightValue<Boolean>) reduceExpressions(expressionBacklog);
+
+            conditional.assignConditionAndBody(condition, body);
+
+            return conditional;
+        }
+
         //Find brackets and reduce before
         expressionBacklog = processPrecedenceBrackets(expressionBacklog);
 
@@ -112,7 +145,7 @@ public class Molang {
                         //ProcedureBracketsOpen the operation
                         if (currentOperator.getPriority() >= nextOperatorPriority) {
                             RightValue left = (RightValue) expressionBacklog.get(i - 1);
-                            RightValue right = (RightValue)expressionBacklog.get(i + 1);
+                            RightValue right = (RightValue) expressionBacklog.get(i + 1);
                             currentOperator.assign(left, right);
 
                             expressionBacklog.remove(i - 1);
@@ -129,7 +162,7 @@ public class Molang {
         return expressionBacklog.get(expressionBacklog.size() - 1);
     }
 
-    private int getNextOperatorPriority(int startIndex, ArrayList<Expression> expressionBacklog) {
+    private static int getNextOperatorPriority(int startIndex, ArrayList<Expression> expressionBacklog) {
         int nextOperatorPriority = -1;
         for (int a = startIndex + 1; a < expressionBacklog.size(); a++) {
             Expression otherExpression = expressionBacklog.get(a);
@@ -144,7 +177,7 @@ public class Molang {
         return nextOperatorPriority;
     }
 
-    private ArrayList<Expression> processPrecedenceBrackets(ArrayList<Expression> expressionBacklog) {
+    private static ArrayList<Expression> processPrecedenceBrackets(ArrayList<Expression> expressionBacklog) {
         int openBrackets = 0;
         int openingBracketIndex = -1;
         ArrayList<Expression> innerExpressions = new ArrayList<>();

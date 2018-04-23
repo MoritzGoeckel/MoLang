@@ -1,16 +1,14 @@
 package Expressions.ControlFlow;
 
+import Expressions.Expression;
 import Expressions.RightValue;
 import Tokenizer.ExpressionInfo;
 import Util.Scope;
 
-public class While extends Procedure{
+public class While extends Conditional{
 
-    private RightValue<Boolean> condition;
+    public While() {
 
-    public While(RightValue<Boolean> condition, Scope parentScope) {
-        super(parentScope);
-        this.condition = condition;
     }
 
     public static ExpressionInfo getTokenType(){
@@ -18,10 +16,8 @@ public class While extends Procedure{
     }
 
     @Override
-    public Object evaluate() {
+    public void execute() {
         while (condition.evaluate())
-            super.evaluate();
-
-        return null;
+            body.execute();
     }
 }

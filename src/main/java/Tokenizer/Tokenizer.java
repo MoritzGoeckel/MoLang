@@ -52,14 +52,17 @@ public class Tokenizer {
         for(String c : separators)
             code = code.replace(c, " "+c+" ");
 
-        code = code.replace(" {", " { ;");
-        code = code.replace(" }", " } ;");
-
         if(!code.endsWith(";"))
             code += " ;";
 
         code = code.replace('\t', ' ');
         code = code.replace('\n', ' ');
+
+        if(!code.endsWith("}"))
+            code += " }";
+
+        if(!code.startsWith("{"))
+            code = "{ " + code;
 
         return code;
     }
@@ -86,5 +89,26 @@ public class Tokenizer {
         }
 
         return tokens;
+    }
+
+    //Todo: align with preprocessing
+    public LinkedList<Token> postprocess(LinkedList<Token> tokens){
+        LinkedList<Token> tokensOut = new LinkedList<Token>();
+
+        for(Token token : tokens){
+            if(tokensOut.size() > 0) {
+                if (tokensOut.getLast().getType().equals(ProcedureBracketsClose.getTokenType())
+                        && token.getType().equals(Seperator.getTokenType()))
+                    continue;
+
+                if (tokensOut.getLast().getType().equals(Seperator.getTokenType())
+                        && token.getType().equals(Seperator.getTokenType()))
+                    continue;
+            }
+
+            tokensOut.add(token);
+        }
+
+        return tokensOut;
     }
 }
