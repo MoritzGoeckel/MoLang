@@ -33,9 +33,10 @@ end
 - [x] Jumps (if)
 - [x] Loops (while)
 - [ ] Functions
-- [ ] Scope
+- [x] Scope
 - [ ] Unary operators
 - [ ] String type
+- [ ] IO
 
 ## Usage in Java
 ``` java

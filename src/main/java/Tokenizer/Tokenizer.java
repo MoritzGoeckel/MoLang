@@ -1,15 +1,10 @@
 package Tokenizer;
 
-import Expressions.ControlFlow.Do;
-import Expressions.ControlFlow.End;
-import Expressions.ControlFlow.If;
-import Expressions.ControlFlow.While;
+import Expressions.ControlFlow.*;
+import Expressions.Markers.*;
 import Expressions.Values.Boolliteral;
 import Expressions.Values.Identifier;
 import Expressions.Values.Numliteral;
-import Expressions.Markers.PrecedenceBracketClose;
-import Expressions.Markers.PrecedenceBracketOpen;
-import Expressions.Markers.Seperator;
 import Expressions.Operators.*;
 
 import java.util.*;
@@ -21,10 +16,11 @@ public class Tokenizer {
         //Todo: Make it configurable
 
         expressionInfos.add(Boolliteral.getTokenType()); //Needs to be before identifier
-        expressionInfos.add(End.getTokenType());
+        expressionInfos.add(ProcedureBracketsClose.getTokenType());
         expressionInfos.add(If.getTokenType());
-        expressionInfos.add(Do.getTokenType());
+        expressionInfos.add(ProcedureBracketsOpen.getTokenType());
         expressionInfos.add(While.getTokenType());
+        //expressionInfos.add(Fun.getTokenType());
 
         expressionInfos.add(Numliteral.getTokenType());
         expressionInfos.add(Plus.getTokenType());
@@ -50,6 +46,24 @@ public class Tokenizer {
     //Todo: Problem with =, does not get seperated yet
     private String[] separators = {"(", ")", ";", "[", "]", "{", "}", "+", "-", "*", "/", "==", "%", "||", "&&"};
 
+    public String preprocess(String code){
+        code = code.replace('\n', ' ');
+
+        for(String c : separators)
+            code = code.replace(c, " "+c+" ");
+
+        code = code.replace(" {", " { ;");
+        code = code.replace(" }", " } ;");
+
+        if(!code.endsWith(";"))
+            code += " ;";
+
+        code = code.replace('\t', ' ');
+        code = code.replace('\n', ' ');
+
+        return code;
+    }
+
     public LinkedList<Token> tokenize(String code){
         String[] items = code.split(" ");
 
@@ -72,21 +86,5 @@ public class Tokenizer {
         }
 
         return tokens;
-    }
-
-    public String preprocess(String code){
-        for(String c : separators)
-            code = code.replace(c, " "+c+" ");
-
-        code = code.replace(" end", " end ;");
-        code = code.replace(" then", " then ;");
-
-        if(!code.endsWith(";"))
-            code += " ;";
-
-        code = code.replace('\t', ' ');
-        code = code.replace('\n', ' ');
-
-        return code;
     }
 }

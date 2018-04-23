@@ -2,12 +2,14 @@ package Expressions.ControlFlow;
 
 import Expressions.RightValue;
 import Tokenizer.ExpressionInfo;
+import Util.Scope;
 
 public class While extends Procedure{
 
     private RightValue<Boolean> condition;
 
-    public While(RightValue<Boolean> condition) {
+    public While(RightValue<Boolean> condition, Scope parentScope) {
+        super(parentScope);
         this.condition = condition;
     }
 
@@ -16,8 +18,10 @@ public class While extends Procedure{
     }
 
     @Override
-    public void execute() {
+    public Object evaluate() {
         while (condition.evaluate())
-            super.execute();
+            super.evaluate();
+
+        return null;
     }
 }

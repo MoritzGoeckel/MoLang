@@ -75,40 +75,40 @@ class BaseTests {
     void identifierTest() {
         Molang lang = new Molang("a = 10");
         assertEquals(new Integer(10), lang.execLine(), "Expression is 10");
-        assertEquals(10, lang.getContext().getIdentifier("a").evaluate(), "Variable is 10");
+        assertEquals(10, lang.getScope().getValue("a"), "Variable is 10");
     }
 
     @Test
     void identifierComplexTest() {
         Molang lang = new Molang("a = 10 * 5 + 3 * 2 * 1");
         assertEquals(new Integer(56), lang.execLine(), "Expression is 56");
-        assertEquals(56, lang.getContext().getIdentifier("a").evaluate(), "Variable is 56");
+        assertEquals(56, lang.getScope().getValue("a"), "Variable is 56");
     }
 
     @Test
     void multilineTest() {
         Molang lang = new Molang("a = 1; b = 2; a = 4");
         lang.exec();
-        assertEquals(4, lang.getContext().getIdentifier("a").evaluate());
-        assertEquals(2, lang.getContext().getIdentifier("b").evaluate());
+        assertEquals(4, lang.getScope().getValue("a"));
+        assertEquals(2, lang.getScope().getValue("b"));
     }
 
     @Test
     void booleanTest() {
         Molang lang = new Molang("a = true; b = false;");
         lang.exec();
-        assertEquals(true, lang.getContext().getIdentifier("a").evaluate());
-        assertEquals(false, lang.getContext().getIdentifier("b").evaluate());
+        assertEquals(true, lang.getScope().getValue("a"));
+        assertEquals(false, lang.getScope().getValue("b"));
     }
 
     @Test
     void booleanComplexTest() {
         Molang lang = new Molang("a = true; b = false; c = a && b; d = false || a;");
         lang.exec();
-        assertEquals(true, lang.getContext().getIdentifier("a").evaluate());
-        assertEquals(false, lang.getContext().getIdentifier("b").evaluate());
-        assertEquals(false, lang.getContext().getIdentifier("c").evaluate());
-        assertEquals(true, lang.getContext().getIdentifier("d").evaluate());
+        assertEquals(true, lang.getScope().getValue("a"));
+        assertEquals(false, lang.getScope().getValue("b"));
+        assertEquals(false, lang.getScope().getValue("c"));
+        assertEquals(true, lang.getScope().getValue("d"));
     }
 
     @Test
@@ -137,26 +137,35 @@ class BaseTests {
 
     @Test
     void ifTest() {
-        Molang lang = new Molang("if 2 < 3 do; a = 20; b = 21; end; c = 90; if 2 > 3 do; a = 10; b = 11; end;");
+        Molang lang = new Molang("a = 0; b = 0; c = 0; if 2 < 3 { a = 20; b = 21; } c = 90; if 2 > 3 { a = 10; b = 11; }");
         lang.exec();
-        assertEquals(20, lang.getContext().getIdentifier("a").evaluate());
-        assertEquals(21, lang.getContext().getIdentifier("b").evaluate());
-        assertEquals(90, lang.getContext().getIdentifier("c").evaluate());
+        assertEquals(20, lang.getScope().getValue("a"));
+        assertEquals(21, lang.getScope().getValue("b"));
+        assertEquals(90, lang.getScope().getValue("c"));
     }
 
     @Test
     void whileTest() {
-        Molang lang = new Molang("a = 0; while a < 10 do; a = a + 3; end;");
+        Molang lang = new Molang("a = 0; while a < 10 { a = a + 3; }");
         lang.exec();
-        assertEquals(12, lang.getContext().getIdentifier("a").evaluate());
+        assertEquals(12, lang.getScope().getValue("a"));
     }
 
     @Test
     void multilineComplexTest() {
         Molang lang = new Molang("a = 10 * 30 + 3; b = a / 3; c = (10 + 3) * a;");
         lang.exec();
-        assertEquals(303, lang.getContext().getIdentifier("a").evaluate());
-        assertEquals(101, lang.getContext().getIdentifier("b").evaluate());
-        assertEquals(13 * 303, lang.getContext().getIdentifier("c").evaluate());
+        assertEquals(303, lang.getScope().getValue("a"));
+        assertEquals(101, lang.getScope().getValue("b"));
+        assertEquals(13 * 303, lang.getScope().getValue("c"));
+    }
+
+    @Test
+    void procedureTest() {
+        Molang lang = new Molang("a = { b = 2 / 2; }");
+        lang.exec();
+        assertEquals(303, lang.getScope().getValue("a"));
+        assertEquals(101, lang.getScope().getValue("b"));
+        assertEquals(13 * 303, lang.getScope().getValue("c"));
     }
 }

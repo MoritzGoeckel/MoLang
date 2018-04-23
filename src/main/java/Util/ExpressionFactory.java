@@ -1,5 +1,8 @@
+package Util;
+
 import Expressions.*;
-import Expressions.ControlFlow.End;
+import Expressions.Markers.ProcedureBracketsClose;
+import Expressions.Markers.ProcedureBracketsOpen;
 import Expressions.Values.Boolliteral;
 import Expressions.Values.Identifier;
 import Expressions.Values.Numliteral;
@@ -11,7 +14,7 @@ import Tokenizer.Token;
 
 public class ExpressionFactory {
 
-    public static Expression createExpression(Token token, Context context){
+    public static Expression createExpression(Token token, Scope scope){
         ExpressionInfo type = token.getType();
 
         if(type.equals(PrecedenceBracketOpen.getTokenType()))
@@ -42,7 +45,7 @@ public class ExpressionFactory {
             return new Numliteral(token.getValue());
 
         if(type.equals(Identifier.getTokenType()))
-            return context.getIdentifier(token.getValue());
+            return new Identifier(token.getValue(), scope);
 
         if(type.equals(Boolliteral.getTokenType()))
             return new Boolliteral(token.getValue());
@@ -62,8 +65,11 @@ public class ExpressionFactory {
         if(type.equals(More.getTokenType()))
             return new More();
 
-        if(type.equals(End.getTokenType()))
-            return new End();
+        if(type.equals(ProcedureBracketsClose.getTokenType()))
+            return new ProcedureBracketsClose();
+
+        if(type.equals(ProcedureBracketsOpen.getTokenType()))
+            return new ProcedureBracketsOpen(scope);
 
         throw new RuntimeException("Expression Name not found: " + type.getExpressionName());
     }

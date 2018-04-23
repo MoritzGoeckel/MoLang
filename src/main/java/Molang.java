@@ -1,22 +1,20 @@
 import Expressions.*;
 import Expressions.ControlFlow.*;
-import Expressions.Markers.PrecedenceBracketClose;
-import Expressions.Markers.PrecedenceBracketOpen;
-import Expressions.Markers.Seperator;
+import Expressions.Markers.*;
 import Expressions.Operators.Operator;
 import Tokenizer.*;
+import Util.ExpressionFactory;
+import Util.Scope;
 
 import java.util.*;
 
 public class Molang {
     private Procedure procedure;
-    private Context context;
 
     public Molang(String code){
         Tokenizer tokenizer = new Tokenizer();
         code = tokenizer.preprocess(code);
         LinkedList<Token> tokens = tokenizer.tokenize(code);
-        context = new Context();
         procedure = createProcedure(tokens);
     }
 
@@ -24,24 +22,26 @@ public class Molang {
         LinkedList<Token> latestTokens = new LinkedList<>();
 
         Stack<Procedure> procedureStack = new Stack<>();
-        procedureStack.push(new Procedure());
+        procedureStack.push(new Procedure(null));
 
         while (!tokens.isEmpty()) {
             Token currentToken = tokens.pop();
             if (currentToken.getType().equals(Seperator.getTokenType())){
                 if(latestTokens.size() != 0) {
-                    Expression expression = createExpressionTree(latestTokens);
 
-                    if (isSibling(expression, End.class))
+                    //Handle ; separated statement
+                    Expression expression = createExpressionTree(latestTokens, procedureStack.peek().getScope());
+
+                    if (isSibling(expression, ProcedureBracketsClose.class))
                         procedureStack.pop();
                     else
                         procedureStack.peek().addExpression(expression);
 
                     if (isSibling(expression, Procedure.class))
                         procedureStack.push((Procedure) expression);
-                }
 
-                latestTokens.clear();
+                    latestTokens.clear();
+                }
             }
             else {
                 latestTokens.add(currentToken);
@@ -57,34 +57,35 @@ public class Molang {
         return procedureStack.pop();
     }
 
-    private Expression createExpressionTree(LinkedList<Token> tokens){
+    private Expression createExpressionTree(LinkedList<Token> tokens, Scope scope){
         if(tokens.size() == 0)
             throw new RuntimeException("Tokens are empty");
 
+        //Handling procedures
         if(tokens.getFirst().getType().isProcedure()){
-            //Handling procedures
-
-            //Removing the procedure name
+            //Removing the procedure opener
             Token token = tokens.removeFirst();
 
-            //Removing the then
-            if(!tokens.removeLast().getType().equals(Do.getTokenType()))
-                throw new RuntimeException("Expected 'do' keyword");
+            //Removing the do
+            if(token.getType().equals(If.getTokenType()) || token.getType().equals(While.getTokenType()))
+                if(!tokens.removeLast().getType().equals(ProcedureBracketsOpen.getTokenType()))
+                    throw new RuntimeException("Expected '{' keyword");
 
             //Creating the procedure node
             if(token.getType().equals(If.getTokenType()))
-                return new If((RightValue<Boolean>) createExpressionTree(tokens));
+                return new If((RightValue<Boolean>) createExpressionTree(tokens, scope), scope);
             else if(token.getType().equals(While.getTokenType()))
-                return new While((RightValue<Boolean>) createExpressionTree(tokens));
+                return new While((RightValue<Boolean>) createExpressionTree(tokens, scope), scope);
+            else if(token.getType().equals(ProcedureBracketsOpen.getTokenType()))
+                return new Procedure(scope);
 
             throw new RuntimeException("Could not find procedure class: " + token.getType());
         }
-        else {
-            //Handling normal expressions
+        else { //Handling normal expressions
             ArrayList<Expression> expressionBacklog = new ArrayList<>();
 
             while (!tokens.isEmpty())
-                expressionBacklog.add(ExpressionFactory.createExpression(tokens.pop(), context));
+                expressionBacklog.add(ExpressionFactory.createExpression(tokens.pop(), scope));
 
             return reduceExpressions(expressionBacklog);
         }
@@ -108,7 +109,7 @@ public class Molang {
                         //Find next operator priority
                         int nextOperatorPriority = getNextOperatorPriority(i, expressionBacklog);
 
-                        //Do the operation
+                        //ProcedureBracketsOpen the operation
                         if (currentOperator.getPriority() >= nextOperatorPriority) {
                             RightValue left = (RightValue) expressionBacklog.get(i - 1);
                             RightValue right = (RightValue)expressionBacklog.get(i + 1);
@@ -190,11 +191,11 @@ public class Molang {
         return procedure.evaluateLine(0);
     }
 
-    public Context getContext() {
-        return context;
+    public Scope getScope() {
+        return this.procedure.getScope();
     }
 
     public void resetContext(){
-        this.context = new Context();
+        this.procedure.resetScope();
     }
 }

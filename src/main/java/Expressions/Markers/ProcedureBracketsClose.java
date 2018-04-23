@@ -1,12 +1,12 @@
-package Expressions.ControlFlow;
+package Expressions.Markers;
 
 import Expressions.Expression;
 import Tokenizer.ExpressionInfo;
 
-public class Do extends Expression {
+public class ProcedureBracketsClose extends Expression {
 
     public static ExpressionInfo getTokenType(){
-        return new ExpressionInfo("Do", x -> x.equals("do"));
+        return new ExpressionInfo("ProcedureBracketsClose", x -> x.equals("}"));
     }
 
     @Override

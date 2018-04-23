@@ -2,12 +2,14 @@ package Expressions.ControlFlow;
 
 import Expressions.RightValue;
 import Tokenizer.ExpressionInfo;
+import Util.Scope;
 
 public class If extends Procedure{
 
     private RightValue<Boolean> condition;
 
-    public If(RightValue<Boolean> condition) {
+    public If(RightValue<Boolean> condition, Scope parentScope) {
+        super(parentScope);
         this.condition = condition;
     }
 
@@ -16,8 +18,10 @@ public class If extends Procedure{
     }
 
     @Override
-    public void execute() {
-        if(condition.evaluate())
-            super.execute();
+    public Object evaluate() {
+        if (condition.evaluate())
+            super.evaluate();
+
+        return null;
     }
 }
