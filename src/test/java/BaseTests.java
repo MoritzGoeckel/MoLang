@@ -159,12 +159,12 @@ class BaseTests {
         assertEquals(90, lang.getScope().getValue("c"));
     }
 
-    /*@Test //todo: while
+    @Test
     void whileTest() {
         Molang lang = new Molang("a = 0; while a < 10 { a = a + 3; }");
         lang.exec();
         assertEquals(12, lang.getScope().getValue("a"));
-    }*/
+    }
 
     @Test
     void multilineComplexTest() {
@@ -181,5 +181,12 @@ class BaseTests {
         lang.exec();
         assertEquals(Procedure.class, lang.getScope().getValue("a").getClass());
         //assertEquals(1, lang.getScope().getValue("b"));
+    }
+
+    @Test
+    void scopeTest2() {
+        Molang lang = new Molang("b = 0; if b == 0 { if b < 1 { b = 2; } }");
+        lang.exec();
+        assertEquals(2, lang.getScope().getValue("b"));
     }
 }

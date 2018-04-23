@@ -64,12 +64,6 @@ public class ExpressionFactory {
         if(type.equals(More.getTokenType()))
             return new More();
 
-        if(type.equals(ProcedureBracketsClose.getTokenType()))
-            return new ProcedureBracketsClose();
-
-        if(type.equals(ProcedureBracketsOpen.getTokenType()))
-            return new ProcedureBracketsOpen();
-
         if(type.equals(Seperator.getTokenType()))
             return new Seperator();
 

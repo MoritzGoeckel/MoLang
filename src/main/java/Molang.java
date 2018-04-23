@@ -19,12 +19,7 @@ public class Molang {
         procedure = createProcedure(tokens);
     }
 
-    /*//Todo: should that be here?
-        if(!expressionList.isEmpty() && isSibling(expressionList.getLast(), Conditional.class))
-            ((Conditional)expressionList.getLast()).assignBody(expression);
-        else*/
-
-    private Procedure createProcedure(LinkedList<Token> tokens){
+    private static Procedure createProcedure(LinkedList<Token> tokens){
         Stack<Procedure> procedureStack = new Stack<>();
         Stack<LinkedList<Expression>> expressionsPerProcedureStack = new Stack<>();
 
@@ -80,33 +75,6 @@ public class Molang {
 
         return statements;
     }
-
-    /*private static Expression createExpressionTree(LinkedList<Token> tokens, Scope scope){
-        if(tokens.size() == 0)
-            throw new RuntimeException("Tokens are empty");
-
-        //Handling procedures
-        if(tokens.getFirst().getType().isProcedure()){
-            //Removing the procedure opener
-            Token token = tokens.removeFirst();
-
-            //Creating the procedure node
-            if(token.getType().equals(If.getTokenType()))
-                return new If((RightValue<Boolean>) createExpressionTree(tokens, scope));
-            else if(token.getType().equals(While.getTokenType()))
-                return new While((RightValue<Boolean>) createExpressionTree(tokens, scope));
-
-            throw new RuntimeException("Could not find procedure class: " + token.getType());
-        }
-        else { //Handling normal expressions
-            ArrayList<Expression> expressionBacklog = new ArrayList<>();
-
-            while (!tokens.isEmpty())
-                expressionBacklog.add(ExpressionFactory.createExpression(tokens.pop(), scope));
-
-            return reduceExpressions(expressionBacklog);
-        }
-    }*/
 
     private static Expression reduceExpressions(ArrayList<Expression> expressionBacklog){
 
