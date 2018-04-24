@@ -9,14 +9,16 @@ c = (10 + 3) * a;
 d = a == b;
 e = a < 10;
 
-if e == false do
+if e == false {
     c = 0;
-end
+}
 
-f = 0;
-while f < 10 do
-    f = f + 3;
-end
+x = 0;
+while x < 10 {
+    x = x + 3;
+}
+
+f = { b = b * 2; }
 
 ```
 
