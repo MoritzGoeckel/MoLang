@@ -4,6 +4,7 @@ import Expressions.Markers.*;
 import Expressions.Operators.Infix.Infix;
 import Expressions.Operators.Operator;
 import Expressions.Operators.Prefix.Prefix;
+import Expressions.Operators.Prefix.Return;
 import Tokenizer.*;
 import Util.ExpressionFactory;
 import Util.Scope;
@@ -41,8 +42,18 @@ public class Molang {
                 Procedure procedure = procedureStack.pop();
 
                 LinkedList<Expression> expressions = expressionsPerProcedureStack.pop();
-                List<Expression> statements = getStatementList(expressions);
-                for(Expression statement : statements)
+                LinkedList<Expression> statements = getStatementList(expressions);
+
+                //Check if last statement should be converted to return
+                Expression lastStatement = statements.getLast();
+                if(isSibling(lastStatement, RightValue.class) && !isSibling(lastStatement, Return.class)) {
+                    //Override the last statement
+                    Return enhancedStatement = new Return(procedure.getScope());
+                    enhancedStatement.addOperand(lastStatement);
+                    statements.set(statements.size() - 1, enhancedStatement);
+                }
+
+                for (Expression statement : statements)
                     procedure.addExpression(statement);
 
                 if(!procedureStack.isEmpty()) {
@@ -100,7 +111,6 @@ public class Molang {
 
         //Reduce tree to one element
         while (expressionBacklog.size() > 1) {
-            //Todo: Should use iterator
             for (int i = 0; i < expressionBacklog.size() && expressionBacklog.size() > 1; i++) {
                 Expression currentExpression = expressionBacklog.get(i);
 
@@ -111,18 +121,17 @@ public class Molang {
 
                         //Find next operator priority
                         int nextOperatorPriority = getNextOperatorPriority(i, expressionBacklog);
-
-                        //ProcedureBracketsOpen the operation
                         if (currentOperator.getPriority() >= nextOperatorPriority) {
 
                             if(isSibling(currentOperator, Infix.class)){
+                                //Infix (2 operands)
                                 RightValue left = (RightValue) expressionBacklog.get(i - 1);
                                 RightValue right = (RightValue) expressionBacklog.get(i + 1);
                                 ((Infix)currentOperator).setOperands(left, right);
-
                                 expressionBacklog.remove(i - 1);
                                 expressionBacklog.remove(i); //Former i + 1
                             }else if(isSibling(currentOperator, Prefix.class)){
+                                //Prefix (n operands)
                                 Prefix currentPrefix = (Prefix)currentOperator;
                                 while (!currentPrefix.isComplete()) {
                                     RightValue right = (RightValue) expressionBacklog.get(i + 1);
@@ -131,7 +140,7 @@ public class Molang {
                                 }
                             }
                             else {
-                                //What can it be?
+                                //Not infix nor prefix
                                 throw new RuntimeException("What kind of operator is that? " + currentOperator);
                             }
 
@@ -202,10 +211,6 @@ public class Molang {
 
     public void exec(){
         procedure.execute();
-    }
-
-    public Object execLine(){
-        return procedure.evaluateLine(0);
     }
 
     public Scope getScope() {

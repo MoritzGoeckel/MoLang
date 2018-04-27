@@ -16,10 +16,6 @@ public class Procedure extends RightValue {
         expressionList.add(expression);
     }
 
-    public Object evaluateLine(int number) {
-        return ((RightValue)expressionList.get(number)).evaluate();
-    }
-
     public Scope getScope() {
         return scope;
     }

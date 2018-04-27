@@ -15,18 +15,14 @@ public class Tokenizer {
     private List<ExpressionInfo> expressionInfos = new ArrayList<>();
     {
         //Todo: Make it configurable
-
         expressionInfos.add(Boolliteral.getTokenType()); //Needs to be before identifier
         expressionInfos.add(ProcedureBracketsClose.getTokenType());
         expressionInfos.add(If.getTokenType());
         expressionInfos.add(ProcedureBracketsOpen.getTokenType());
         expressionInfos.add(While.getTokenType());
-        //expressionInfos.add(Fun.getTokenType());
-
         expressionInfos.add(PlusPlus.getTokenType());
         expressionInfos.add(Return.getTokenType());
         expressionInfos.add(Local.getTokenType());
-
         expressionInfos.add(Numliteral.getTokenType());
         expressionInfos.add(Plus.getTokenType());
         expressionInfos.add(Multiply.getTokenType());
@@ -102,6 +98,8 @@ public class Tokenizer {
 
         for(Token token : tokens){
             if(tokensOut.size() > 0) {
+
+                //Strip double separators
                 if (tokensOut.getLast().getType().equals(ProcedureBracketsClose.getTokenType())
                         && token.getType().equals(Seperator.getTokenType()))
                     continue;
@@ -109,6 +107,8 @@ public class Tokenizer {
                 if (tokensOut.getLast().getType().equals(Seperator.getTokenType())
                         && token.getType().equals(Seperator.getTokenType()))
                     continue;
+
+
             }
 
             tokensOut.add(token);

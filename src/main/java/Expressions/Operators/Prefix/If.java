@@ -9,8 +9,10 @@ public class If extends Conditional {
     }
 
     @Override
-    public void execute() {
+    public Object evaluate() {
         if (condition.evaluate())
             body.execute();
+
+        return null;
     }
 }

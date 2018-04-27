@@ -67,7 +67,8 @@ class BaseTests {
     private void executeTests(String[][] codes){
         for (String[] code : codes) {
             Molang lang = new Molang(code[0]);
-            Object actual = lang.execLine();
+            lang.exec();
+            Object actual = lang.getResult();
             assertEquals(code[1], actual.toString(), code[0] + " should be " + code[1] + " but was " + actual);
         }
     }
@@ -75,14 +76,16 @@ class BaseTests {
     @Test
     void identifierTest() {
         Molang lang = new Molang("a = 10");
-        assertEquals(new Integer(10), lang.execLine(), "Expression is 10");
+        lang.exec();
+        assertEquals(new Integer(10), lang.getResult(), "Expression is 10");
         assertEquals(10, lang.getScope().getValue("a"), "Variable is 10");
     }
 
     @Test
     void identifierComplexTest() {
         Molang lang = new Molang("a = 10 * 5 + 3 * 2 * 1");
-        assertEquals(new Integer(56), lang.execLine(), "Expression is 56");
+        lang.exec();
+        assertEquals(new Integer(56), lang.getResult(), "Expression is 56");
         assertEquals(56, lang.getScope().getValue("a"), "Variable is 56");
     }
 

@@ -24,12 +24,7 @@ public abstract class Conditional extends Prefix {
     }
 
     @Override
-    public Object evaluate() {
-        return null;
-    }
-
-    @Override
     public int getPriority() {
-        return -3;
+        return 0;
     }
 }
