@@ -213,4 +213,12 @@ class BaseTests {
         lang.exec();
         assertEquals(5, lang.getScope().getReturnValue());
     }
+
+    @Test
+    void lazyEvalTest() {
+        executeTests(new String[][]{
+                {"a = 5; b = { a = 3; } return a;", "5"},
+                {"a = 5; { a = 3; } return a;", "3"}
+        });
+    }
 }
