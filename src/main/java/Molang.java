@@ -44,14 +44,7 @@ public class Molang {
                 LinkedList<Expression> expressions = expressionsPerProcedureStack.pop();
                 LinkedList<Expression> statements = getStatementList(expressions);
 
-                //Check if last statement should be converted to return
-                Expression lastStatement = statements.getLast();
-                if(isSibling(lastStatement, RightValue.class) && !isSibling(lastStatement, Return.class)) {
-                    //Override the last statement
-                    Return enhancedStatement = new Return(procedure.getScope());
-                    enhancedStatement.addOperand(lastStatement);
-                    statements.set(statements.size() - 1, enhancedStatement);
-                }
+                addImplicitReturn(procedure, statements);
 
                 for (Expression statement : statements)
                     procedure.addExpression(statement);
@@ -85,6 +78,17 @@ public class Molang {
         throw new RuntimeException("Procedure stack should be simplifiable to one: " + procedureStack.toString());
     }
 
+    private static void addImplicitReturn(Procedure procedure, LinkedList<Expression> statements) {
+        //Check if last statement should be converted to return
+        Expression lastStatement = statements.getLast();
+        if(isSibling(lastStatement, RightValue.class) && !isSibling(lastStatement, Return.class)) {
+            //Override the last statement
+            Return enhancedStatement = new Return(procedure.getScope());
+            enhancedStatement.addOperand(lastStatement);
+            statements.set(statements.size() - 1, enhancedStatement);
+        }
+    }
+
     private static LinkedList<Expression> getStatementList(LinkedList<Expression> expressions){
         LinkedList<Expression> statements = new LinkedList<>();
         ArrayList<Expression> latestExpressions = new ArrayList<>();
@@ -106,7 +110,7 @@ public class Molang {
 
     private static Expression reduceExpressions(ArrayList<Expression> expressionBacklog){
 
-        //Find brackets and reduce before
+        //Find brackets and reduce them before creating ast
         expressionBacklog = processPrecedenceBrackets(expressionBacklog);
 
         //Reduce tree to one element
@@ -152,6 +156,9 @@ public class Molang {
         }
 
         //The expression backlog should be simplified to one element now
+        if(expressionBacklog.size() != 1)
+            throw new RuntimeException("Expression list should be reducible to one expression! Expressions left: " + expressionBacklog.size());
+
         return expressionBacklog.get(expressionBacklog.size() - 1);
     }
 
