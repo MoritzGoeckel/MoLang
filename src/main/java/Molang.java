@@ -1,7 +1,8 @@
 import Expressions.*;
-import Expressions.ControlFlow.*;
 import Expressions.Markers.*;
+import Expressions.Operators.Infix.Infix;
 import Expressions.Operators.Operator;
+import Expressions.Operators.Prefix.Prefix;
 import Tokenizer.*;
 import Util.ExpressionFactory;
 import Util.Scope;
@@ -78,21 +79,6 @@ public class Molang {
 
     private static Expression reduceExpressions(ArrayList<Expression> expressionBacklog){
 
-        if(isSibling(expressionBacklog.get(0), Conditional.class)){
-            Conditional conditional = (Conditional) expressionBacklog.get(0);
-            expressionBacklog.remove(0);
-
-            int lastIndex = expressionBacklog.size() - 1;
-            Procedure body = (Procedure) expressionBacklog.get(lastIndex);
-            expressionBacklog.remove(lastIndex);
-
-            RightValue<Boolean> condition = (RightValue<Boolean>) reduceExpressions(expressionBacklog);
-
-            conditional.assignConditionAndBody(condition, body);
-
-            return conditional;
-        }
-
         //Find brackets and reduce before
         expressionBacklog = processPrecedenceBrackets(expressionBacklog);
 
@@ -112,12 +98,26 @@ public class Molang {
 
                         //ProcedureBracketsOpen the operation
                         if (currentOperator.getPriority() >= nextOperatorPriority) {
-                            RightValue left = (RightValue) expressionBacklog.get(i - 1);
-                            RightValue right = (RightValue) expressionBacklog.get(i + 1);
-                            currentOperator.assign(left, right);
 
-                            expressionBacklog.remove(i - 1);
-                            expressionBacklog.remove(i); //Former i + 1
+                            if(isSibling(currentOperator, Infix.class)){
+                                RightValue left = (RightValue) expressionBacklog.get(i - 1);
+                                RightValue right = (RightValue) expressionBacklog.get(i + 1);
+                                ((Infix)currentOperator).setOperands(left, right);
+
+                                expressionBacklog.remove(i - 1);
+                                expressionBacklog.remove(i); //Former i + 1
+                            }else if(isSibling(currentOperator, Prefix.class)){
+                                Prefix currentPrefix = (Prefix)currentOperator;
+                                while (!currentPrefix.isComplete()) {
+                                    RightValue right = (RightValue) expressionBacklog.get(i + 1);
+                                    currentPrefix.addOperand(right);
+                                    expressionBacklog.remove(i + 1);
+                                }
+                            }
+                            else {
+                                //What can it be?
+                                throw new RuntimeException("What kind of operator is that? " + currentOperator);
+                            }
 
                             i--;
                         }
@@ -131,7 +131,7 @@ public class Molang {
     }
 
     private static int getNextOperatorPriority(int startIndex, ArrayList<Expression> expressionBacklog) {
-        int nextOperatorPriority = -1;
+        int nextOperatorPriority = Integer.MIN_VALUE;
         for (int a = startIndex + 1; a < expressionBacklog.size(); a++) {
             Expression otherExpression = expressionBacklog.get(a);
             if (isSibling(otherExpression, Operator.class)) {

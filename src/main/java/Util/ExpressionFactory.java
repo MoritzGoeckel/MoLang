@@ -1,13 +1,15 @@
 package Util;
 
 import Expressions.*;
-import Expressions.ControlFlow.If;
-import Expressions.ControlFlow.While;
+import Expressions.Operators.Prefix.If;
+import Expressions.Operators.Prefix.Return;
+import Expressions.Operators.Prefix.While;
 import Expressions.Markers.*;
+import Expressions.Operators.Infix.*;
+import Expressions.Operators.Prefix.PlusPlus;
 import Expressions.Values.Boolliteral;
 import Expressions.Values.Identifier;
 import Expressions.Values.Numliteral;
-import Expressions.Operators.*;
 import Tokenizer.ExpressionInfo;
 import Tokenizer.Token;
 
@@ -15,6 +17,9 @@ public class ExpressionFactory {
 
     public static Expression createExpression(Token token, Scope scope){
         ExpressionInfo type = token.getType();
+
+        if(type.equals(Return.getTokenType()))
+            return new Return(scope);
 
         if(type.equals(PrecedenceBracketOpen.getTokenType()))
             return new PrecedenceBracketOpen();
@@ -72,6 +77,9 @@ public class ExpressionFactory {
 
         if(type.equals(If.getTokenType()))
             return new If();
+
+        if(type.equals(PlusPlus.getTokenType()))
+            return new PlusPlus();
 
         throw new RuntimeException("Expression Name not found: " + type.getExpressionName());
     }

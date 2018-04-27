@@ -6,6 +6,8 @@ public class Scope {
     private Scope parent;
     private HashMap<String, Object> identifierMap = new HashMap<>();
 
+    private Object returnValue;
+
     public Scope(Scope parent){
         this.parent = parent;
     }
@@ -39,5 +41,13 @@ public class Scope {
 
     public void reset(){
         this.identifierMap.clear();
+    }
+
+    public Object getReturnValue() {
+        return returnValue;
+    }
+
+    public void setReturnValue(Object returnValue) {
+        this.returnValue = returnValue;
     }
 }

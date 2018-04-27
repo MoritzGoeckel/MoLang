@@ -1,4 +1,4 @@
-import Expressions.ControlFlow.Procedure;
+import Expressions.Procedure;
 import Tokenizer.Token;
 import Tokenizer.Tokenizer;
 import org.junit.jupiter.api.Test;
@@ -189,4 +189,20 @@ class BaseTests {
         lang.exec();
         assertEquals(2, lang.getScope().getValue("b"));
     }
+
+    @Test
+    void plusPlusTest() {
+        Molang lang = new Molang("b = 0; ++ b;");
+        lang.exec();
+        assertEquals(1, lang.getScope().getValue("b"));
+    }
+
+    @Test
+    void returnTest() {
+        Molang lang = new Molang("return 3 * 2;");
+        lang.exec();
+        assertEquals(6, lang.getScope().getReturnValue());
+    }
+
+    //Todo: Test Return
 }

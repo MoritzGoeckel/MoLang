@@ -1,11 +1,14 @@
 package Tokenizer;
 
-import Expressions.ControlFlow.*;
 import Expressions.Markers.*;
+import Expressions.Operators.Infix.*;
+import Expressions.Operators.Prefix.If;
+import Expressions.Operators.Prefix.PlusPlus;
+import Expressions.Operators.Prefix.Return;
+import Expressions.Operators.Prefix.While;
 import Expressions.Values.Boolliteral;
 import Expressions.Values.Identifier;
 import Expressions.Values.Numliteral;
-import Expressions.Operators.*;
 
 import java.util.*;
 
@@ -21,6 +24,9 @@ public class Tokenizer {
         expressionInfos.add(ProcedureBracketsOpen.getTokenType());
         expressionInfos.add(While.getTokenType());
         //expressionInfos.add(Fun.getTokenType());
+
+        expressionInfos.add(PlusPlus.getTokenType());
+        expressionInfos.add(Return.getTokenType());
 
         expressionInfos.add(Numliteral.getTokenType());
         expressionInfos.add(Plus.getTokenType());
@@ -43,8 +49,8 @@ public class Tokenizer {
     }
 
     //Todo: Make it configurable
-    //Todo: Problem with =, does not get seperated yet
-    private String[] separators = {"(", ")", ";", "[", "]", "{", "}", "+", "-", "*", "/", "==", "%", "||", "&&"};
+    //Todo: Problem with =, does not get seperated yet sme for +
+    private String[] separators = {"(", ")", ";", "[", "]", "{", "}", "-", "*", "/", "==", "%", "||", "&&"};
 
     public String preprocess(String code){
         code = code.replace('\n', ' ');

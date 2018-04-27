@@ -28,7 +28,7 @@ f = { b = b * 2; }
 - [x] Operator precedence
 - [x] Variables
 - [x] Number literals (1, 2, 3 etc.)
-- [x] Multiline programs (seperated by ';')
+- [x] Multiline programs (separated by ';')
 - [x] Brackets for changing precedence
 - [x] Bool type
 - [x] Comparisons
