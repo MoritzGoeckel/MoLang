@@ -1,4 +1,5 @@
 import Expressions.*;
+import Expressions.Annotations.Annotation;
 import Expressions.Markers.*;
 import Expressions.Operators.Infix.Infix;
 import Expressions.Operators.Operator;
@@ -23,6 +24,7 @@ public class Molang {
     private static Procedure createProcedure(LinkedList<Token> tokens){
         Stack<Procedure> procedureStack = new Stack<>();
         Stack<LinkedList<Expression>> expressionsPerProcedureStack = new Stack<>();
+        Stack<Annotation> pendingAnnotations = new Stack<>();
 
         while (!tokens.isEmpty()) {
             Token currentToken = tokens.pop();
@@ -51,7 +53,21 @@ public class Molang {
                     return procedure;
             }
             else{
-                expressionsPerProcedureStack.peek().add(ExpressionFactory.createExpression(currentToken, procedureStack.peek().getScope()));
+                //Create expression
+                Expression expr = ExpressionFactory.createExpression(currentToken, procedureStack.peek().getScope());
+
+                if(isSibling(expr, Annotation.class)) {
+                    //Stack annotations
+                    pendingAnnotations.push((Annotation) expr);
+                }
+                else {
+                    //Apply annotations
+                    while (!pendingAnnotations.isEmpty())
+                        expr = pendingAnnotations.pop().Process(expr);
+
+                    //Add expression
+                    expressionsPerProcedureStack.peek().add(expr);
+                }
             }
         }
 
@@ -194,6 +210,10 @@ public class Molang {
 
     public Scope getScope() {
         return this.procedure.getScope();
+    }
+
+    public Object getResult(){
+        return this.procedure.getScope().getReturnValue();
     }
 
     public void resetContext(){

@@ -1,11 +1,9 @@
 package Tokenizer;
 
+import Expressions.Annotations.Local;
 import Expressions.Markers.*;
 import Expressions.Operators.Infix.*;
-import Expressions.Operators.Prefix.If;
-import Expressions.Operators.Prefix.PlusPlus;
-import Expressions.Operators.Prefix.Return;
-import Expressions.Operators.Prefix.While;
+import Expressions.Operators.Prefix.*;
 import Expressions.Values.Boolliteral;
 import Expressions.Values.Identifier;
 import Expressions.Values.Numliteral;
@@ -27,6 +25,7 @@ public class Tokenizer {
 
         expressionInfos.add(PlusPlus.getTokenType());
         expressionInfos.add(Return.getTokenType());
+        expressionInfos.add(Local.getTokenType());
 
         expressionInfos.add(Numliteral.getTokenType());
         expressionInfos.add(Plus.getTokenType());

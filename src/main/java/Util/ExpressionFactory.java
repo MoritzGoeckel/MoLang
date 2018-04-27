@@ -1,12 +1,10 @@
 package Util;
 
 import Expressions.*;
-import Expressions.Operators.Prefix.If;
-import Expressions.Operators.Prefix.Return;
-import Expressions.Operators.Prefix.While;
+import Expressions.Annotations.Local;
+import Expressions.Operators.Prefix.*;
 import Expressions.Markers.*;
 import Expressions.Operators.Infix.*;
-import Expressions.Operators.Prefix.PlusPlus;
 import Expressions.Values.Boolliteral;
 import Expressions.Values.Identifier;
 import Expressions.Values.Numliteral;
@@ -16,10 +14,14 @@ import Tokenizer.Token;
 public class ExpressionFactory {
 
     public static Expression createExpression(Token token, Scope scope){
+        //Todo: Make configurable
         ExpressionInfo type = token.getType();
 
         if(type.equals(Return.getTokenType()))
             return new Return(scope);
+
+        if(type.equals(Local.getTokenType()))
+            return new Local();
 
         if(type.equals(PrecedenceBracketOpen.getTokenType()))
             return new PrecedenceBracketOpen();

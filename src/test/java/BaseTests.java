@@ -204,5 +204,10 @@ class BaseTests {
         assertEquals(6, lang.getScope().getReturnValue());
     }
 
-    //Todo: Test Return
+    @Test
+    void localTest() {
+        Molang lang = new Molang("a = 5; { local a = 3; } return a;");
+        lang.exec();
+        assertEquals(5, lang.getScope().getReturnValue());
+    }
 }

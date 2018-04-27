@@ -28,7 +28,7 @@ f = { b = b * 2; }
 - [x] Operator precedence
 - [x] Variables
 - [x] Number literals (1, 2, 3 etc.)
-- [x] Multiline programs (separated by ';')
+- [x] Multi statement programs (separated by ';')
 - [x] Brackets for changing precedence
 - [x] Bool type
 - [x] Comparisons
@@ -36,7 +36,11 @@ f = { b = b * 2; }
 - [x] Loops (while)
 - [ ] Functions
 - [x] Scope
-- [ ] Unary operators
+- [x] Unary operators
+- [x] Prefix operators
+- [x] Infix operators
+- [ ] Postfix operators
+- [ ] Local variables
 - [ ] String type
 - [ ] IO
 

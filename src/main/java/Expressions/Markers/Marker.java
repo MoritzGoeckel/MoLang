@@ -1,7 +1,6 @@
 package Expressions.Markers;
 
 import Expressions.Expression;
-import Tokenizer.ExpressionInfo;
 
 public abstract class Marker extends Expression {
 

@@ -8,6 +8,7 @@ public class Identifier<T> extends LeftValue<T> {
 
     private String name;
     private Scope scope;
+    private boolean local = false;
 
     public Identifier(String name, Scope scope){
         this.name = name;
@@ -18,6 +19,10 @@ public class Identifier<T> extends LeftValue<T> {
         return new ExpressionInfo("Identifier", x -> x.matches("[a-zA-Z]+"));
     }
 
+    public void makeLocal(){
+        this.local = true;
+    }
+
     @Override
     public T evaluate() {
         return (T)scope.getValue(name);
@@ -25,6 +30,9 @@ public class Identifier<T> extends LeftValue<T> {
 
     @Override
     public void assign(T value) {
-        scope.setValue(name, value);
+        if(local)
+            scope.setValueLocal(name, value);
+        else
+            scope.setValue(name, value);
     }
 }

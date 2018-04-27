@@ -36,7 +36,11 @@ public class Scope {
         if(parent != null && parent.containsIdentifier(id))
             parent.setValue(id, value);
         else
-            identifierMap.put(id, value);
+            setValueLocal(id, value);
+    }
+
+    public void setValueLocal(String id, Object value){
+        identifierMap.put(id, value);
     }
 
     public void reset(){
