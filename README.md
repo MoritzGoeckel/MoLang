@@ -20,6 +20,11 @@ while x < 10 {
 
 f = { b = b * 2; }
 
+ff = {
+    local a = 30;
+    return a;
+}
+
 ```
 
 ## Features
@@ -40,9 +45,11 @@ f = { b = b * 2; }
 - [x] Prefix operators
 - [x] Infix operators
 - [ ] Postfix operators
-- [ ] Local variables
+- [x] Local variables
 - [ ] String type
-- [ ] IO
+- [ ] I/O
+- [ ] Arrays
+- [ ] Function parameters
 
 ## Usage in Java
 ``` java

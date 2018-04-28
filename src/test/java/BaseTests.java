@@ -221,4 +221,18 @@ class BaseTests {
                 {"a = 5; { a = 3; } return a;", "3"}
         });
     }
+
+    @Test
+    void defineFunTest() {
+        Molang lang = new Molang("a = (x,y){ 3; };");
+        lang.exec();
+        assertEquals("[x, y]", ((Procedure)lang.getScope().getReturnValue()).getArgumentNames().toString());
+    }
+
+    @Test
+    void defineFunTest2() {
+        Molang lang = new Molang("a = (x){ 3; };");
+        lang.exec();
+        assertEquals("[x]", ((Procedure)lang.getScope().getReturnValue()).getArgumentNames().toString());
+    }
 }

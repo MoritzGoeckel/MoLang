@@ -27,7 +27,7 @@ public class Tokenizer {
         expressionInfos.add(Plus.getTokenType());
         expressionInfos.add(Multiply.getTokenType());
         expressionInfos.add(Assignment.getTokenType());
-        expressionInfos.add(Seperator.getTokenType());
+        expressionInfos.add(Separator.getTokenType());
         expressionInfos.add(Minus.getTokenType());
         expressionInfos.add(Modulo.getTokenType());
         expressionInfos.add(Divide.getTokenType());
@@ -38,6 +38,7 @@ public class Tokenizer {
         expressionInfos.add(More.getTokenType());
         expressionInfos.add(Less.getTokenType());
         expressionInfos.add(Equal.getTokenType());
+        expressionInfos.add(ArgumentSeparator.getTokenType());
 
         //Needs to be way down
         expressionInfos.add(Identifier.getTokenType());
@@ -45,7 +46,7 @@ public class Tokenizer {
 
     //Todo: Make it configurable
     //Todo: Problem with =, does not get seperated yet sme for +
-    private String[] separators = {"(", ")", ";", "[", "]", "{", "}", "-", "*", "/", "==", "%", "||", "&&"};
+    private String[] separators = {"(", ")", ";", "[", "]", "{", "}", "-", "*", "/", "==", "%", "||", "&&", ","};
 
     public String preprocess(String code){
         code = code.replace('\n', ' ');
@@ -101,11 +102,11 @@ public class Tokenizer {
 
                 //Strip double separators
                 if (tokensOut.getLast().getType().equals(ProcedureBracketsClose.getTokenType())
-                        && token.getType().equals(Seperator.getTokenType()))
+                        && token.getType().equals(Separator.getTokenType()))
                     continue;
 
-                if (tokensOut.getLast().getType().equals(Seperator.getTokenType())
-                        && token.getType().equals(Seperator.getTokenType()))
+                if (tokensOut.getLast().getType().equals(Separator.getTokenType())
+                        && token.getType().equals(Separator.getTokenType()))
                     continue;
 
 

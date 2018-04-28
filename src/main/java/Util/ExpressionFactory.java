@@ -17,6 +17,9 @@ public class ExpressionFactory {
         //Todo: Make configurable
         ExpressionInfo type = token.getType();
 
+        if(type.equals(ArgumentSeparator.getTokenType()))
+            return new ArgumentSeparator();
+
         if(type.equals(Return.getTokenType()))
             return new Return(scope);
 
@@ -71,8 +74,8 @@ public class ExpressionFactory {
         if(type.equals(More.getTokenType()))
             return new More();
 
-        if(type.equals(Seperator.getTokenType()))
-            return new Seperator();
+        if(type.equals(Separator.getTokenType()))
+            return new Separator();
 
         if(type.equals(While.getTokenType()))
             return new While();

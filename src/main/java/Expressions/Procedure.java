@@ -6,6 +6,7 @@ import java.util.LinkedList;
 public class Procedure extends RightValue {
     private LinkedList<Expression> expressionList;
     private Scope scope;
+    private LinkedList<String> argumentNames;
 
     public Procedure(Scope parent){
         this.expressionList = new LinkedList<>();
@@ -32,5 +33,16 @@ public class Procedure extends RightValue {
 
         //Todo: some kind of return statement should be added? Maybe?
         return null;
+    }
+
+    public void setArgumentNames(LinkedList<String> argumentNames){
+        if(this.argumentNames == null)
+            this.argumentNames = argumentNames;
+        else
+            throw new RuntimeException("argumentNames already set!");
+    }
+
+    public LinkedList<String> getArgumentNames() {
+        return argumentNames;
     }
 }

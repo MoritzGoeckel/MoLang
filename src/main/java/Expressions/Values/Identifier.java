@@ -4,6 +4,8 @@ import Expressions.LeftValue;
 import Tokenizer.ExpressionInfo;
 import Util.Scope;
 
+import java.util.LinkedList;
+
 public class Identifier<T> extends LeftValue<T> {
 
     private String name;
@@ -13,6 +15,10 @@ public class Identifier<T> extends LeftValue<T> {
     public Identifier(String name, Scope scope){
         this.name = name;
         this.scope = scope;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public static ExpressionInfo getTokenType() {

@@ -1,10 +1,12 @@
 import Expressions.*;
 import Expressions.Annotations.Annotation;
 import Expressions.Markers.*;
+import Expressions.Operators.Infix.Assignment;
 import Expressions.Operators.Infix.Infix;
 import Expressions.Operators.Operator;
 import Expressions.Operators.Prefix.Prefix;
 import Expressions.Operators.Prefix.Return;
+import Expressions.Values.Identifier;
 import Tokenizer.*;
 import Util.ExpressionFactory;
 import Util.Scope;
@@ -51,7 +53,7 @@ public class Molang {
 
                 if(!procedureStack.isEmpty()) {
                     expressionsPerProcedureStack.peek().add(procedure);
-                    expressionsPerProcedureStack.peek().add(new Seperator()); //Todo: Maybe?
+                    expressionsPerProcedureStack.peek().add(new Separator()); //Todo: Maybe?
                 }
                 else
                     return procedure;
@@ -94,7 +96,7 @@ public class Molang {
         ArrayList<Expression> latestExpressions = new ArrayList<>();
 
         for(Expression e:expressions){
-            if(isSibling(e, Seperator.class)) {
+            if(isSibling(e, Separator.class)) {
                 statements.add(reduceExpressions(latestExpressions));
                 latestExpressions.clear();
             }
@@ -112,6 +114,15 @@ public class Molang {
 
         //Find brackets and reduce them before creating ast
         expressionBacklog = processPrecedenceBrackets(expressionBacklog);
+
+        //Process argument lists
+        Expression argumentList = processArgumentList(expressionBacklog);
+        if (argumentList != null) return argumentList;
+
+        //Process function definitions
+        processFunctionDefinitions(expressionBacklog);
+
+
 
         //Reduce tree to one element
         while (expressionBacklog.size() > 1) {
@@ -160,6 +171,53 @@ public class Molang {
             throw new RuntimeException("Expression list should be reducible to one expression! Expressions left: " + expressionBacklog.size());
 
         return expressionBacklog.get(expressionBacklog.size() - 1);
+    }
+
+    private static void processFunctionDefinitions(ArrayList<Expression> expressionBacklog) {
+        for(int i = 0; i < expressionBacklog.size(); i++){
+            Expression currentExpression = expressionBacklog.get(i);
+
+            //Has next element and seeing next element
+            //Processing Function calls / Definitions
+            if(i + 1 < expressionBacklog.size() && isSibling(expressionBacklog.get(i + 1), Procedure.class)) {
+                Procedure procedure = (Procedure)expressionBacklog.get(i + 1);
+
+                if(isSibling(currentExpression, ArgumentList.class) || isSibling(currentExpression, Identifier.class)){
+                    //Its a definition
+                    LinkedList<String> names = new LinkedList<>();
+
+                    if(isSibling(currentExpression, ArgumentList.class))
+                        names.addAll(((ArgumentList) currentExpression).getArgumentNames());
+
+                    if(isSibling(currentExpression, Identifier.class))
+                        names.add(((Identifier)currentExpression).getName());
+
+                    procedure.setArgumentNames(names);
+                    expressionBacklog.remove(i);
+                }
+            }
+        }
+    }
+
+    private static Expression processArgumentList(ArrayList<Expression> expressionBacklog) {
+        ArrayList<Expression> pendingArgumentExpressions = new ArrayList<>();
+        LinkedList<Expression> arguments = new LinkedList<>();
+        for(Expression e : expressionBacklog){
+            if(isSibling(e, ArgumentSeparator.class)) {
+                arguments.add(reduceExpressions(pendingArgumentExpressions));
+                pendingArgumentExpressions.clear();
+            }
+            else
+                pendingArgumentExpressions.add(e);
+        }
+
+        if(!arguments.isEmpty()) {
+            //Its an argument list because it has argument separators
+            if(!pendingArgumentExpressions.isEmpty())
+                arguments.add(reduceExpressions(pendingArgumentExpressions));
+            return new ArgumentList(arguments);
+        }
+        return null;
     }
 
     private static int getNextOperatorPriority(int startIndex, ArrayList<Expression> expressionBacklog) {
