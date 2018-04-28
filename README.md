@@ -52,7 +52,7 @@ assertEquals("55", lang.getScope().getReturnValue().toString());
 ```
 
 ## Tests
-The entire project is unit tested with around 30 JUnit5 tests and the current line coverage is 93%.
+The entire project is unit tested with around 30 JUnit5 tests and the current line coverage is 94%.
 
 ### Assembly like interpreter
 If you like interpreters you might check out my [Assembly like interpreter](https://github.com/MoritzGoeckel/Assembly-ish-Interpreter) written in Node.js

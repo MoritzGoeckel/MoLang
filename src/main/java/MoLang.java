@@ -1,7 +1,6 @@
 import Expressions.*;
 import Expressions.Annotations.Annotation;
 import Expressions.Markers.*;
-import Expressions.Operators.Infix.Assignment;
 import Expressions.Operators.Infix.Infix;
 import Expressions.Operators.Operator;
 import Expressions.Operators.Prefix.Prefix;
@@ -13,10 +12,10 @@ import Util.Scope;
 
 import java.util.*;
 
-public class Molang {
+public class MoLang {
     private Procedure procedure;
 
-    public Molang(String code){
+    public MoLang(String code){
         Tokenizer tokenizer = new Tokenizer();
         code = tokenizer.preprocess(code);
         LinkedList<Token> tokens = tokenizer.tokenize(code);
@@ -42,7 +41,7 @@ public class Molang {
                 LinkedList<Expression> expressions = expressionsPerProcedureStack.pop();
                 LinkedList<Expression> statements = getStatementList(expressions);
 
-                addImplicitReturn(procedure, statements);
+                addImplicitReturn(statements);
 
                 for (Expression statement : statements)
                     procedure.addExpression(statement);
@@ -76,7 +75,7 @@ public class Molang {
         throw new RuntimeException("Procedure stack should be simplifiable to one: " + procedureStack.toString());
     }
 
-    private static void addImplicitReturn(Procedure procedure, LinkedList<Expression> statements) {
+    private static void addImplicitReturn(LinkedList<Expression> statements) {
         //Check if last statement should be converted to return
         Expression lastStatement = statements.getLast();
         if(isSibling(lastStatement, RightValue.class) && !isSibling(lastStatement, Return.class)) {
@@ -306,15 +305,11 @@ public class Molang {
         return parent.isAssignableFrom(child.getClass());
     }
 
-    public Object exec(Scope scope){
-        return procedure.evaluate(scope);
-    }
-
-    public Object exec(){
+    public Object execute(){
         return procedure.evaluate(new Scope(null));
     }
 
-    public Scope getScope(){
+    public Scope executeAndGetScope(){
         Scope scope = new Scope(null);
         procedure.evaluateWithScope(scope);
         return scope;
