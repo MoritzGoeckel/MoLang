@@ -2,6 +2,7 @@ package Expressions.Values;
 
 import Expressions.RightValue;
 import Tokenizer.ExpressionInfo;
+import Util.Scope;
 
 public class Numliteral extends RightValue<Integer> {
 
@@ -16,7 +17,7 @@ public class Numliteral extends RightValue<Integer> {
     }
 
     @Override
-    public Integer evaluate() {
+    public Integer evaluate(Scope scope) {
         return value;
     }
 }

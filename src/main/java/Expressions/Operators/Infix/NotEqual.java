@@ -3,17 +3,17 @@ package Expressions.Operators.Infix;
 import Tokenizer.ExpressionInfo;
 import Util.Scope;
 
-public class Plus extends Infix<Integer> {
+public class NotEqual<T> extends Infix<T> {
 
     private static int priority = 1;
 
     public static ExpressionInfo getTokenType(){
-        return new ExpressionInfo("Plus", x -> x.equals("+"), priority);
+        return new ExpressionInfo("NotEqual", x -> x.equals("!="), priority);
     }
 
     @Override
-    public Integer evaluate(Scope scope) {
-        return left.evaluate(scope) + right.evaluate(scope);
+    public Boolean evaluate(Scope scope) {
+        return !left.evaluate(scope).equals(right.evaluate(scope));
     }
 
     @Override

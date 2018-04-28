@@ -1,6 +1,7 @@
 package Expressions;
 
 import Expressions.Values.Identifier;
+import Util.Scope;
 
 import java.util.LinkedList;
 
@@ -28,7 +29,7 @@ public class ArgumentList extends Expression{
     }
 
     @Override
-    public void execute() {
+    public void execute(Scope scope) {
         throw new RuntimeException();
     }
 }

@@ -33,11 +33,7 @@ public class Molang {
             Token currentToken = tokens.pop();
             if(currentToken.getType().equals(ProcedureBracketsOpen.getTokenType())){
 
-                Scope parentScope = null;
-                if(!procedureStack.isEmpty())
-                    parentScope = procedureStack.peek().getScope();
-
-                procedureStack.push(new Procedure(parentScope));
+                procedureStack.push(new Procedure());
                 expressionsPerProcedureStack.push(new LinkedList<>());
 
             }else if(currentToken.getType().equals(ProcedureBracketsClose.getTokenType())){
@@ -60,7 +56,7 @@ public class Molang {
             }
             else{
                 //Create expression
-                Expression expr = ExpressionFactory.createExpression(currentToken, procedureStack.peek().getScope());
+                Expression expr = ExpressionFactory.createExpression(currentToken);
 
                 if(isSibling(expr, Annotation.class)) {
                     //Stack annotations
@@ -85,7 +81,7 @@ public class Molang {
         Expression lastStatement = statements.getLast();
         if(isSibling(lastStatement, RightValue.class) && !isSibling(lastStatement, Return.class)) {
             //Override the last statement
-            Return enhancedStatement = new Return(procedure.getScope());
+            Return enhancedStatement = new Return();
             enhancedStatement.addOperand(lastStatement);
             statements.set(statements.size() - 1, enhancedStatement);
         }
@@ -310,19 +306,17 @@ public class Molang {
         return parent.isAssignableFrom(child.getClass());
     }
 
-    public void exec(){
-        procedure.execute();
+    public Object exec(Scope scope){
+        return procedure.evaluate(scope);
     }
 
-    public Scope getScope() {
-        return this.procedure.getScope();
+    public Object exec(){
+        return procedure.evaluate(new Scope(null));
     }
 
-    public Object getResult(){
-        return this.procedure.getScope().getReturnValue();
-    }
-
-    public void resetContext(){
-        this.procedure.resetScope();
+    public Scope getScope(){
+        Scope scope = new Scope(null);
+        procedure.evaluateWithScope(scope);
+        return scope;
     }
 }

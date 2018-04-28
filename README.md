@@ -25,6 +25,12 @@ ff = {
     return a;
 }
 
+fff = (x, y){
+    x * y;
+}
+
+z = fff(2,3) * 10;
+
 ```
 
 ## Features

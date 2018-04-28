@@ -1,6 +1,7 @@
 package Expressions.Operators.Infix;
 
 import Tokenizer.ExpressionInfo;
+import Util.Scope;
 
 public class Minus extends Infix<Integer> {
 
@@ -11,8 +12,8 @@ public class Minus extends Infix<Integer> {
     }
 
     @Override
-    public Integer evaluate() {
-        return left.evaluate() - right.evaluate();
+    public Integer evaluate(Scope scope) {
+        return left.evaluate(scope) - right.evaluate(scope);
     }
 
     @Override

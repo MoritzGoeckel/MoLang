@@ -2,6 +2,7 @@ package Expressions.Values;
 
 import Expressions.RightValue;
 import Tokenizer.ExpressionInfo;
+import Util.Scope;
 
 public class Boolliteral extends RightValue<Boolean> {
 
@@ -16,7 +17,7 @@ public class Boolliteral extends RightValue<Boolean> {
     }
 
     @Override
-    public Boolean evaluate() {
+    public Boolean evaluate(Scope scope) {
         return value;
     }
 }

@@ -1,32 +1,23 @@
 package Expressions.Operators.Prefix;
 
-import Expressions.Procedure;
 import Expressions.Expression;
 import Expressions.RightValue;
 import Tokenizer.ExpressionInfo;
 import Util.Scope;
 
-public class Return extends Prefix {
+public class Print extends Prefix {
 
     private static int priority = -3;
     private RightValue operand;
 
     public static ExpressionInfo getTokenType(){
-        return new ExpressionInfo("Return", x -> x.equals("return"), priority);
+        return new ExpressionInfo("Print", x -> x.equals("print"), priority);
     }
 
     @Override
     public Object evaluate(Scope scope) {
-        Object value = null;
-
-        //Lazy evaluation
-        if(operand.getClass() == Procedure.class)
-            value = operand;
-        else
-            value = operand.evaluate(scope);
-
-        scope.setReturnValue(value);
-
+        Object value =  operand.evaluate(scope);
+        System.out.println(value);
         return value;
     }
 

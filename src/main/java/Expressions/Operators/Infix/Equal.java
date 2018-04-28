@@ -1,6 +1,7 @@
 package Expressions.Operators.Infix;
 
 import Tokenizer.ExpressionInfo;
+import Util.Scope;
 
 public class Equal<T> extends Infix<T> {
 
@@ -11,8 +12,8 @@ public class Equal<T> extends Infix<T> {
     }
 
     @Override
-    public Boolean evaluate() {
-        return left.evaluate().equals(right.evaluate());
+    public Boolean evaluate(Scope scope) {
+        return left.evaluate(scope).equals(right.evaluate(scope));
     }
 
     @Override

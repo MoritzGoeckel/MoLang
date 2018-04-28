@@ -5,33 +5,39 @@ import java.util.LinkedList;
 
 public class Procedure extends RightValue {
     private LinkedList<Expression> expressionList;
-    private Scope scope;
     private LinkedList<String> argumentNames;
 
-    public Procedure(Scope parent){
+    public Procedure(){
         this.expressionList = new LinkedList<>();
-        this.scope = new Scope(parent);
     }
 
     public void addExpression(Expression expression){
         expressionList.add(expression);
     }
 
-    public Scope getScope() {
-        return scope;
-    }
-
-    public void resetScope(){
-        this.scope.reset();
-    }
-
     @Override
-    public Object evaluate() {
-        for(Expression e : expressionList){
-            e.execute();
+    public Object evaluate(Scope scope) {
+        return evaluateWithScope(new Scope(scope));
+    }
+
+    public Object evaluateWithArguments(Scope scope, LinkedList<RightValue> values) {
+        Scope thisScope = new Scope(scope);
+
+        if(values.size() != argumentNames.size())
+            throw new RuntimeException("Number of arguments does not match: " + values.size() + " != " + argumentNames.size());
+
+        for(int i = 0; i < values.size(); i++){
+            thisScope.setValueLocal(argumentNames.get(i), values.get(i).evaluate(scope));
         }
 
-        return getScope().getReturnValue();
+        return evaluateWithScope(thisScope);
+    }
+
+    public Object evaluateWithScope(Scope scope){
+        for(Expression e : expressionList){
+            e.execute(scope);
+        }
+        return scope.getReturnValue();
     }
 
     public void setArgumentNames(LinkedList<String> argumentNames){
@@ -43,14 +49,5 @@ public class Procedure extends RightValue {
 
     public LinkedList<String> getArgumentNames() {
         return argumentNames;
-    }
-
-    public void assignArguments(LinkedList<RightValue> values){
-        if(values.size() != argumentNames.size())
-            throw new RuntimeException("Number of arguments does not match: " + values.size() + " != " + argumentNames.size());
-
-        for(int i = 0; i < values.size(); i++){
-            getScope().setValueLocal(argumentNames.get(i), values.get(i).evaluate());
-        }
     }
 }

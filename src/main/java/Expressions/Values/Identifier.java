@@ -11,13 +11,11 @@ import java.util.LinkedList;
 public class Identifier<T> extends LeftValue<T> {
 
     private String name;
-    private Scope scope;
     private boolean local = false;
     private LinkedList<RightValue> parameters;
 
-    public Identifier(String name, Scope scope){
+    public Identifier(String name){
         this.name = name;
-        this.scope = scope;
     }
 
     public String getName() {
@@ -37,19 +35,18 @@ public class Identifier<T> extends LeftValue<T> {
     }
 
     @Override
-    public T evaluate() {
+    public T evaluate(Scope scope) {
         if(parameters == null)
             return (T)scope.getValue(name);
         else {
             //Eval function
             Procedure procedure = (Procedure)scope.getValue(name);
-            procedure.assignArguments(parameters);
-            return (T)procedure.evaluate();
+            return (T)procedure.evaluateWithArguments(scope, parameters);
         }
     }
 
     @Override
-    public void assign(T value) {
+    public void assign(T value, Scope scope) {
         if(local)
             scope.setValueLocal(name, value);
         else

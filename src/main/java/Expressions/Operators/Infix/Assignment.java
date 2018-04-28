@@ -4,6 +4,7 @@ import Expressions.Procedure;
 import Expressions.Values.Identifier;
 import Expressions.RightValue;
 import Tokenizer.ExpressionInfo;
+import Util.Scope;
 
 public class Assignment<T> extends Infix<T> {
 
@@ -14,7 +15,7 @@ public class Assignment<T> extends Infix<T> {
     }
 
     @Override
-    public T evaluate() {
+    public T evaluate(Scope scope) {
 
         T value = null;
 
@@ -22,9 +23,9 @@ public class Assignment<T> extends Infix<T> {
         if(right.getClass() == Procedure.class)
             value = (T)right;
         else
-            value = ((RightValue<T>)right).evaluate();
+            value = ((RightValue<T>)right).evaluate(scope);
 
-        ((Identifier)left).assign(value);
+        ((Identifier)left).assign(value, scope);
         return value;
     }
 

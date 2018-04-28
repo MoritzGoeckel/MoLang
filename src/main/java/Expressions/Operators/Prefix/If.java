@@ -1,6 +1,7 @@
 package Expressions.Operators.Prefix;
 
 import Tokenizer.ExpressionInfo;
+import Util.Scope;
 
 public class If extends Conditional {
 
@@ -9,9 +10,9 @@ public class If extends Conditional {
     }
 
     @Override
-    public Object evaluate() {
-        if (condition.evaluate())
-            body.execute();
+    public Object evaluate(Scope scope) {
+        if (condition.evaluate(scope))
+            body.execute(scope);
 
         return null;
     }

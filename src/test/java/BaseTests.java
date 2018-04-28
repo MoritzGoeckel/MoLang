@@ -1,8 +1,13 @@
 import Expressions.Procedure;
 import Tokenizer.Token;
 import Tokenizer.Tokenizer;
+import Util.Scope;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+
+import com.google.common.io.Resources;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -67,8 +72,8 @@ class BaseTests {
     private void executeTests(String[][] codes){
         for (String[] code : codes) {
             Molang lang = new Molang(code[0]);
-            lang.exec();
-            Object actual = lang.getResult();
+            Scope scope = lang.getScope();
+            Object actual = scope.getReturnValue();
             assertEquals(code[1], actual.toString(), code[0] + " should be " + code[1] + " but was " + actual);
         }
     }
@@ -76,17 +81,17 @@ class BaseTests {
     @Test
     void identifierTest() {
         Molang lang = new Molang("a = 10");
-        lang.exec();
-        assertEquals(new Integer(10), lang.getResult(), "Expression is 10");
-        assertEquals(10, lang.getScope().getValue("a"), "Variable is 10");
+        Scope scope = lang.getScope();
+        assertEquals(new Integer(10), scope.getReturnValue(), "Expression is 10");
+        assertEquals(10, scope.getValue("a"), "Variable is 10");
     }
 
     @Test
     void identifierComplexTest() {
         Molang lang = new Molang("a = 10 * 5 + 3 * 2 * 1");
-        lang.exec();
-        assertEquals(new Integer(56), lang.getResult(), "Expression is 56");
-        assertEquals(56, lang.getScope().getValue("a"), "Variable is 56");
+        Scope scope = lang.getScope();
+        assertEquals(new Integer(56), scope.getReturnValue(), "Expression is 56");
+        assertEquals(56, scope.getValue("a"), "Variable is 56");
     }
 
     @Test
@@ -100,9 +105,9 @@ class BaseTests {
     @Test
     void booleanTest() {
         Molang lang = new Molang("a = true; b = false;");
-        lang.exec();
-        assertEquals(true, lang.getScope().getValue("a"));
-        assertEquals(false, lang.getScope().getValue("b"));
+        Scope scope = lang.getScope();
+        assertEquals(true, scope.getValue("a"));
+        assertEquals(false, scope.getValue("b"));
     }
 
     @Test
@@ -255,5 +260,21 @@ class BaseTests {
         Molang lang = new Molang("a = (){ 3; }; a();");
         lang.exec();
         assertEquals("3", lang.getScope().getReturnValue().toString());
+    }
+
+    @Test
+    void simpleExampleTest() throws IOException {
+        String code = Resources.toString(Resources.getResource("simpleExample.molang"), StandardCharsets.UTF_8);
+
+        Molang lang = new Molang(code);
+        assertEquals("42", lang.getScope().getReturnValue().toString());
+    }
+
+    @Test
+    void complexExampleTest() throws IOException {
+        String code = Resources.toString(Resources.getResource("complexExample.molang"), StandardCharsets.UTF_8);
+
+        Molang lang = new Molang(code);
+        assertEquals("55", lang.getScope().getReturnValue().toString());
     }
 }

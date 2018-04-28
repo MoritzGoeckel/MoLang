@@ -1,11 +1,14 @@
 package Util;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Set;
 
 public class Scope {
     private Scope parent;
     private HashMap<String, Object> identifierMap = new HashMap<>();
+    private Set<String> localVars = new HashSet<>();
 
     private Object returnValue;
 
@@ -34,18 +37,15 @@ public class Scope {
     }
 
     public void setValue(String id, Object value){
-        if(parent != null && parent.containsIdentifier(id))
+        if(parent != null && !localVars.contains(id) && parent.containsIdentifier(id))
             parent.setValue(id, value);
         else
-            setValueLocal(id, value);
+            identifierMap.put(id, value);
     }
 
-    public void setValueLocal(String id, Object value){
+    public void setValueLocal(String id, Object value) {
         identifierMap.put(id, value);
-    }
-
-    public void reset(){
-        this.identifierMap.clear();
+        localVars.add(id);
     }
 
     public Object getReturnValue() {

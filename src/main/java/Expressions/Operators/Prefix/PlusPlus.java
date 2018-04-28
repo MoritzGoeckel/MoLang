@@ -16,9 +16,9 @@ public class PlusPlus extends Prefix<Integer> {
     }
 
     @Override
-    public Integer evaluate() {
-        Integer oldValue = operand.evaluate();
-        operand.assign(oldValue + 1);
+    public Integer evaluate(Scope scope) {
+        Integer oldValue = operand.evaluate(scope);
+        operand.assign(oldValue + 1, scope);
         return oldValue;
     }
 

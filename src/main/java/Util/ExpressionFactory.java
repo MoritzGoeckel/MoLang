@@ -13,18 +13,27 @@ import Tokenizer.Token;
 
 public class ExpressionFactory {
 
-    public static Expression createExpression(Token token, Scope scope){
+    public static Expression createExpression(Token token){
         //Todo: Make configurable
         ExpressionInfo type = token.getType();
+
+        if(type.equals(Print.getTokenType()))
+            return new Print();
+
+        if(type.equals(Return.getTokenType()))
+            return new Return();
+
+        if(type.equals(Identifier.getTokenType()))
+            return new Identifier(token.getValue());
 
         if(type.equals(ArgumentSeparator.getTokenType()))
             return new ArgumentSeparator();
 
-        if(type.equals(Return.getTokenType()))
-            return new Return(scope);
-
         if(type.equals(Local.getTokenType()))
             return new Local();
+
+        if(type.equals(NotEqual.getTokenType()))
+            return new NotEqual();
 
         if(type.equals(PrecedenceBracketOpen.getTokenType()))
             return new PrecedenceBracketOpen();
@@ -52,9 +61,6 @@ public class ExpressionFactory {
 
         if(type.equals(Numliteral.getTokenType()))
             return new Numliteral(token.getValue());
-
-        if(type.equals(Identifier.getTokenType()))
-            return new Identifier(token.getValue(), scope);
 
         if(type.equals(Boolliteral.getTokenType()))
             return new Boolliteral(token.getValue());

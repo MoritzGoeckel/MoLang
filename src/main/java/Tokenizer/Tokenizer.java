@@ -39,6 +39,8 @@ public class Tokenizer {
         expressionInfos.add(Less.getTokenType());
         expressionInfos.add(Equal.getTokenType());
         expressionInfos.add(ArgumentSeparator.getTokenType());
+        expressionInfos.add(NotEqual.getTokenType());
+        expressionInfos.add(Print.getTokenType());
 
         //Needs to be way down because of collision
         expressionInfos.add(Identifier.getTokenType());
@@ -49,8 +51,10 @@ public class Tokenizer {
     private String[] separators = {"(", ")", ";", "[", "]", "{", "}", "-", "*", "/", "==", "%", "||", "&&", ",", "++"};
 
     public String preprocess(String code){
+        //code = code.replace("\r\n", " ");
         code = code.replace('\n', ' ');
         code = code.replace('\t', ' ');
+        code = code.replace('\r', ' ');
 
         for(String c : separators)
             code = code.replace(c, " "+c+" ");
@@ -61,7 +65,7 @@ public class Tokenizer {
     public LinkedList<Token> tokenize(String code){
         String[] items = code.split(" ");
 
-        LinkedList<Token> tokens = new LinkedList<Token>();
+        LinkedList<Token> tokens = new LinkedList<>();
         for(String item : items){
             if(item.isEmpty())
                 continue;

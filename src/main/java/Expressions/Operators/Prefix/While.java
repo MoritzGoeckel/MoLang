@@ -1,6 +1,7 @@
 package Expressions.Operators.Prefix;
 
 import Tokenizer.ExpressionInfo;
+import Util.Scope;
 
 public class While extends Conditional {
 
@@ -9,9 +10,9 @@ public class While extends Conditional {
     }
 
     @Override
-    public Object evaluate() {
-        while (condition.evaluate())
-            body.execute();
+    public Object evaluate(Scope scope) {
+        while (condition.evaluate(scope))
+            body.execute(scope);
 
         return null;
     }

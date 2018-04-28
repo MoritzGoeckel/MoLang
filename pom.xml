@@ -25,6 +25,12 @@
             <artifactId>junit-jupiter-api</artifactId>
             <version>5.0.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>18.0</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
 

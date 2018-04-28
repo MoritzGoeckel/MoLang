@@ -1,6 +1,7 @@
 package Expressions.Operators.Infix;
 
 import Tokenizer.ExpressionInfo;
+import Util.Scope;
 
 public class Or extends Infix<Boolean> {
 
@@ -11,8 +12,8 @@ public class Or extends Infix<Boolean> {
     }
 
     @Override
-    public Boolean evaluate() {
-        return left.evaluate() || right.evaluate();
+    public Boolean evaluate(Scope scope) {
+        return left.evaluate(scope) || right.evaluate(scope);
     }
 
     @Override
