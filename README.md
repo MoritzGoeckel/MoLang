@@ -24,7 +24,7 @@ return fibonacci(10);
 - [x] Assignment (=)
 - [x] Operator precedence
 - [x] Variables
-- [x] Number literals (1, 2, 3 etc.)
+- [x] Number literals
 - [x] Multi statement programs (separated by ';')
 - [x] Brackets for changing precedence
 - [x] Bool type
@@ -34,15 +34,14 @@ return fibonacci(10);
 - [x] Functions
 - [x] Functions as parameters
 - [ ] Functions as return type 
-- [x] Scope
+- [x] Scopes
 - [x] Local and global variables
 - [x] Unary operators
 - [x] Prefix operators
 - [x] Infix operators
-- [ ] Postfix operators
 - [x] Local variables
-- [ ] String type
 - [x] I/O
+- [ ] String type
 - [ ] Arrays
 
 ## Usage in Java
