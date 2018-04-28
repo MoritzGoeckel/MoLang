@@ -5,7 +5,7 @@ import Expressions.Values.Identifier;
 import java.util.LinkedList;
 
 public class ArgumentList extends Expression{
-    LinkedList<Expression> arguments;
+    private LinkedList<Expression> arguments;
     public ArgumentList(LinkedList<Expression> arguments) {
         this.arguments = arguments;
     }

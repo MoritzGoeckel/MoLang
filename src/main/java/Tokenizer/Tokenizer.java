@@ -40,31 +40,20 @@ public class Tokenizer {
         expressionInfos.add(Equal.getTokenType());
         expressionInfos.add(ArgumentSeparator.getTokenType());
 
-        //Needs to be way down
+        //Needs to be way down because of collision
         expressionInfos.add(Identifier.getTokenType());
     }
 
     //Todo: Make it configurable
-    //Todo: Problem with =, does not get seperated yet sme for +
-    private String[] separators = {"(", ")", ";", "[", "]", "{", "}", "-", "*", "/", "==", "%", "||", "&&", ","};
+    //Todo: Problem with =, does not get separated yet same for +
+    private String[] separators = {"(", ")", ";", "[", "]", "{", "}", "-", "*", "/", "==", "%", "||", "&&", ",", "++"};
 
     public String preprocess(String code){
         code = code.replace('\n', ' ');
+        code = code.replace('\t', ' ');
 
         for(String c : separators)
             code = code.replace(c, " "+c+" ");
-
-        if(!code.endsWith(";"))
-            code += " ;";
-
-        code = code.replace('\t', ' ');
-        code = code.replace('\n', ' ');
-
-        if(!code.endsWith("}"))
-            code += " }";
-
-        if(!code.startsWith("{"))
-            code = "{ " + code;
 
         return code;
     }
@@ -93,26 +82,34 @@ public class Tokenizer {
         return tokens;
     }
 
-    //Todo: align with preprocessing
     public LinkedList<Token> postprocess(LinkedList<Token> tokens){
-        LinkedList<Token> tokensOut = new LinkedList<Token>();
+        LinkedList<Token> tokensOut = new LinkedList<>();
 
         for(Token token : tokens){
             if(tokensOut.size() > 0) {
 
-                //Strip double separators
+                //Strip separator after }
                 if (tokensOut.getLast().getType().equals(ProcedureBracketsClose.getTokenType())
                         && token.getType().equals(Separator.getTokenType()))
                     continue;
 
+                //Strip double separators
                 if (tokensOut.getLast().getType().equals(Separator.getTokenType())
                         && token.getType().equals(Separator.getTokenType()))
                     continue;
-
-
             }
 
             tokensOut.add(token);
+        }
+
+        //Add separator at end of program if it is not concluded by } or ;
+        if(!tokensOut.getLast().getType().equals(ProcedureBracketsClose.getTokenType()) && !tokensOut.getLast().getType().equals(Separator.getTokenType()))
+            tokensOut.add(new Token(Separator.getTokenType(), ";"));
+
+        //Add main procedure brackets if first are missing
+        if (!tokensOut.getFirst().getType().equals(ProcedureBracketsOpen.getTokenType())) {
+            tokensOut.add(0, new Token(ProcedureBracketsOpen.getTokenType(), "{"));
+            tokensOut.add(new Token(ProcedureBracketsClose.getTokenType(), "}"));
         }
 
         return tokensOut;

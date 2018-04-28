@@ -53,7 +53,7 @@ public class Molang {
 
                 if(!procedureStack.isEmpty()) {
                     expressionsPerProcedureStack.peek().add(procedure);
-                    expressionsPerProcedureStack.peek().add(new Separator()); //Todo: Maybe?
+                    expressionsPerProcedureStack.peek().add(new Separator()); //Todo: Is that correct?
                 }
                 else
                     return procedure;
