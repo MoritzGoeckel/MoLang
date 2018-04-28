@@ -47,13 +47,14 @@ z = fff(2,3) * 10;
 - [x] Loops (while)
 - [x] Functions (and parameters)
 - [x] Scope
+- [x] Local and global variables
 - [x] Unary operators
 - [x] Prefix operators
 - [x] Infix operators
 - [ ] Postfix operators
 - [x] Local variables
 - [ ] String type
-- [ ] I/O
+- [x] I/O
 - [ ] Arrays
 
 ## Usage in Java
