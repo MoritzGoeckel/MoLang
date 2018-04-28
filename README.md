@@ -9,28 +9,14 @@ c = (10 + 3) * a;
 d = a == b;
 e = a < 10;
 
-if e == false {
-    c = 0;
+fibonacci = (x){
+    local result = 1;
+    if(x > 2){
+        result = fibonacci(x - 1) + fibonacci(x - 2);
+    }
+    return result;
 }
-
-x = 0;
-while x < 10 {
-    x = x + 3;
-}
-
-f = { b = b * 2; }
-
-ff = {
-    local a = 30;
-    return a;
-}
-
-fff = (x, y){
-    x * y;
-}
-
-z = fff(2,3) * 10;
-
+return fibonacci(10);
 ```
 
 ## Features
