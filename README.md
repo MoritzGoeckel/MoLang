@@ -1,5 +1,5 @@
 # Molang
-This is an fully home made interpreter for a c like language. I build this solely for educational purpose, so maybe you should not use this in production :horse:
+This is an fully home made interpreter for a C like language. I build this solely for educational purpose, so maybe you should not use this in production :horse:
 
 ## Example code
 ```
@@ -45,15 +45,14 @@ return fibonacci(10);
 
 ## Usage in Java
 ``` java
-Molang lang = new Molang("a = 10 * 30 + 3; b = a / 3;");
-lang.exec();
+String code = Resources.toString(Resources.getResource("complexExample.molang"), StandardCharsets.UTF_8);
 
-assertEquals(303, lang.getContext().getIdentifier("a").evaluate());
-assertEquals(101, lang.getContext().getIdentifier("b").evaluate());
+Molang lang = new Molang(code);
+assertEquals("55", lang.getScope().getReturnValue().toString());
 ```
 
 ## Tests
-The entire project is unit tested with JUnit 5 and the current line coverage is 94%.
+The entire project is unit tested with around 30 JUnit5 tests and the current line coverage is 93%.
 
 ### Assembly like interpreter
 If you like interpreters you might check out my [Assembly like interpreter](https://github.com/MoritzGoeckel/Assembly-ish-Interpreter) written in Node.js
