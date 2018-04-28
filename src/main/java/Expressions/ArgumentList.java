@@ -10,6 +10,10 @@ public class ArgumentList extends Expression{
         this.arguments = arguments;
     }
 
+    public ArgumentList(){
+        this.arguments = new LinkedList<>();
+    }
+
     public LinkedList<String> getArgumentNames() {
         LinkedList<String> names = new LinkedList<>();
 

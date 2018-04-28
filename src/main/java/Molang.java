@@ -113,7 +113,7 @@ public class Molang {
     private static Expression reduceExpressions(ArrayList<Expression> expressionBacklog){
 
         //Find brackets and reduce them before creating ast
-        expressionBacklog = processPrecedenceBrackets(expressionBacklog); //Todo: Empty brackets are function calls
+        expressionBacklog = processPrecedenceBrackets(expressionBacklog);
 
         //Process argument lists
         Expression argumentList = processArgumentList(expressionBacklog);
@@ -123,34 +123,7 @@ public class Molang {
         processFunctionDefinitions(expressionBacklog);
 
         //Process function calls
-        for(int i = 0; i < expressionBacklog.size(); i++){
-            Expression currentExpression = expressionBacklog.get(i);
-
-            //Has next element and seeing next element
-            //Processing Function calls / Definitions
-            if(i + 1 < expressionBacklog.size() && isSibling(currentExpression, Identifier.class)) {
-                Identifier identifier = (Identifier)currentExpression;
-                Expression nextExpression = expressionBacklog.get(i + 1);
-
-                if(isSibling(nextExpression, ArgumentList.class)){
-                    //Function call with argumentList
-                    ArgumentList argument = (ArgumentList)nextExpression;
-                    identifier.makeFunctionCall(argument.getArguments());
-
-                    expressionBacklog.remove(i + 1);
-                }
-
-                if(isSibling(nextExpression, RightValue.class) && (!isSibling(nextExpression, Operator.class) || ((Operator)nextExpression).isComplete())){
-                    //Function call with single argument
-                    RightValue argument = (RightValue)nextExpression;
-                    LinkedList<RightValue> toList = new LinkedList<>();
-                    toList.add(argument);
-                    identifier.makeFunctionCall(toList);
-
-                    expressionBacklog.remove(i + 1);
-                }
-            }
-        }
+        processFunctionCalls(expressionBacklog);
 
         //Reduce tree to one element
         while (expressionBacklog.size() > 1) {
@@ -199,6 +172,37 @@ public class Molang {
             throw new RuntimeException("Expression list should be reducible to one expression! Expressions left: " + expressionBacklog.size());
 
         return expressionBacklog.get(expressionBacklog.size() - 1);
+    }
+
+    private static void processFunctionCalls(ArrayList<Expression> expressionBacklog) {
+        for(int i = 0; i < expressionBacklog.size(); i++){
+            Expression currentExpression = expressionBacklog.get(i);
+
+            //Has next element and seeing next element
+            //Processing Function calls / Definitions
+            if(i + 1 < expressionBacklog.size() && isSibling(currentExpression, Identifier.class)) {
+                Identifier identifier = (Identifier)currentExpression;
+                Expression nextExpression = expressionBacklog.get(i + 1);
+
+                if(isSibling(nextExpression, ArgumentList.class)){
+                    //Function call with argumentList
+                    ArgumentList argument = (ArgumentList)nextExpression;
+                    identifier.makeFunctionCall(argument.getArguments());
+
+                    expressionBacklog.remove(i + 1);
+                }
+
+                if(isSibling(nextExpression, RightValue.class) && (!isSibling(nextExpression, Operator.class) || ((Operator)nextExpression).isComplete())){
+                    //Function call with single argument
+                    RightValue argument = (RightValue)nextExpression;
+                    LinkedList<RightValue> toList = new LinkedList<>();
+                    toList.add(argument);
+                    identifier.makeFunctionCall(toList);
+
+                    expressionBacklog.remove(i + 1);
+                }
+            }
+        }
     }
 
     private static void processFunctionDefinitions(ArrayList<Expression> expressionBacklog) {
@@ -277,12 +281,16 @@ public class Molang {
             if (isSibling(expressionBacklog.get(i), PrecedenceBracketClose.class)) {
                 openBrackets--;
 
-                if(openBrackets == 0 && innerExpressions.size() != 0){
+                if(openBrackets == 0){
                     //Remove brackets
                     expressionBacklog.remove(i);
                     innerExpressions.remove(0);
 
-                    expressionBacklog.add(openingBracketIndex, reduceExpressions(innerExpressions));
+                    if(innerExpressions.size() != 0)
+                        expressionBacklog.add(openingBracketIndex, reduceExpressions(innerExpressions));
+                    else
+                        expressionBacklog.add(openingBracketIndex, new ArgumentList()); //Its an empty argument list for function execution
+
                     innerExpressions.clear();
                     openingBracketIndex = -1;
                 }

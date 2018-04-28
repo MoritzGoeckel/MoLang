@@ -249,4 +249,11 @@ class BaseTests {
         lang.exec();
         assertEquals("3", lang.getScope().getReturnValue().toString());
     }
+
+    @Test
+    void runFunTest3() {
+        Molang lang = new Molang("a = (){ 3; }; a();");
+        lang.exec();
+        assertEquals("3", lang.getScope().getReturnValue().toString());
+    }
 }
