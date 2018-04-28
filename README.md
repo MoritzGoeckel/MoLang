@@ -39,7 +39,7 @@ ff = {
 - [x] Comparisons
 - [x] Jumps (if)
 - [x] Loops (while)
-- [ ] Functions
+- [x] Functions (and parameters)
 - [x] Scope
 - [x] Unary operators
 - [x] Prefix operators
@@ -49,7 +49,6 @@ ff = {
 - [ ] String type
 - [ ] I/O
 - [ ] Arrays
-- [ ] Function parameters
 
 ## Usage in Java
 ``` java
