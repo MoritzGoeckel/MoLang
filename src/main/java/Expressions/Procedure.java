@@ -31,8 +31,7 @@ public class Procedure extends RightValue {
             e.execute();
         }
 
-        //Todo: some kind of return statement should be added? Maybe?
-        return null;
+        return getScope().getReturnValue();
     }
 
     public void setArgumentNames(LinkedList<String> argumentNames){
@@ -44,5 +43,14 @@ public class Procedure extends RightValue {
 
     public LinkedList<String> getArgumentNames() {
         return argumentNames;
+    }
+
+    public void assignArguments(LinkedList<RightValue> values){
+        if(values.size() != argumentNames.size())
+            throw new RuntimeException("Number of arguments does not match: " + values.size() + " != " + argumentNames.size());
+
+        for(int i = 0; i < values.size(); i++){
+            getScope().setValueLocal(argumentNames.get(i), values.get(i).evaluate());
+        }
     }
 }

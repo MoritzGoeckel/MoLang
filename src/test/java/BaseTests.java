@@ -235,4 +235,18 @@ class BaseTests {
         lang.exec();
         assertEquals("[x]", ((Procedure)lang.getScope().getReturnValue()).getArgumentNames().toString());
     }
+
+    @Test
+    void runFunTest() {
+        Molang lang = new Molang("a = (x,y){ x * y; }; a(2,3);");
+        lang.exec();
+        assertEquals("6", lang.getScope().getReturnValue().toString());
+    }
+
+    @Test
+    void runFunTest2() {
+        Molang lang = new Molang("a = (x){ 3; }; a(1);");
+        lang.exec();
+        assertEquals("3", lang.getScope().getReturnValue().toString());
+    }
 }

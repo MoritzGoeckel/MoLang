@@ -113,7 +113,7 @@ public class Molang {
     private static Expression reduceExpressions(ArrayList<Expression> expressionBacklog){
 
         //Find brackets and reduce them before creating ast
-        expressionBacklog = processPrecedenceBrackets(expressionBacklog);
+        expressionBacklog = processPrecedenceBrackets(expressionBacklog); //Todo: Empty brackets are function calls
 
         //Process argument lists
         Expression argumentList = processArgumentList(expressionBacklog);
@@ -122,7 +122,35 @@ public class Molang {
         //Process function definitions
         processFunctionDefinitions(expressionBacklog);
 
+        //Process function calls
+        for(int i = 0; i < expressionBacklog.size(); i++){
+            Expression currentExpression = expressionBacklog.get(i);
 
+            //Has next element and seeing next element
+            //Processing Function calls / Definitions
+            if(i + 1 < expressionBacklog.size() && isSibling(currentExpression, Identifier.class)) {
+                Identifier identifier = (Identifier)currentExpression;
+                Expression nextExpression = expressionBacklog.get(i + 1);
+
+                if(isSibling(nextExpression, ArgumentList.class)){
+                    //Function call with argumentList
+                    ArgumentList argument = (ArgumentList)nextExpression;
+                    identifier.makeFunctionCall(argument.getArguments());
+
+                    expressionBacklog.remove(i + 1);
+                }
+
+                if(isSibling(nextExpression, RightValue.class) && (!isSibling(nextExpression, Operator.class) || ((Operator)nextExpression).isComplete())){
+                    //Function call with single argument
+                    RightValue argument = (RightValue)nextExpression;
+                    LinkedList<RightValue> toList = new LinkedList<>();
+                    toList.add(argument);
+                    identifier.makeFunctionCall(toList);
+
+                    expressionBacklog.remove(i + 1);
+                }
+            }
+        }
 
         //Reduce tree to one element
         while (expressionBacklog.size() > 1) {

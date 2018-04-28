@@ -1,6 +1,8 @@
 package Expressions.Values;
 
 import Expressions.LeftValue;
+import Expressions.Procedure;
+import Expressions.RightValue;
 import Tokenizer.ExpressionInfo;
 import Util.Scope;
 
@@ -11,6 +13,7 @@ public class Identifier<T> extends LeftValue<T> {
     private String name;
     private Scope scope;
     private boolean local = false;
+    private LinkedList<RightValue> parameters;
 
     public Identifier(String name, Scope scope){
         this.name = name;
@@ -29,9 +32,20 @@ public class Identifier<T> extends LeftValue<T> {
         this.local = true;
     }
 
+    public void makeFunctionCall(LinkedList<RightValue> parameters){
+        this.parameters = parameters;
+    }
+
     @Override
     public T evaluate() {
-        return (T)scope.getValue(name);
+        if(parameters == null)
+            return (T)scope.getValue(name);
+        else {
+            //Eval function
+            Procedure procedure = (Procedure)scope.getValue(name);
+            procedure.assignArguments(parameters);
+            return (T)procedure.evaluate();
+        }
     }
 
     @Override
