@@ -31,7 +31,9 @@ return fibonacci(10);
 - [x] Comparisons
 - [x] Jumps (if)
 - [x] Loops (while)
-- [x] Functions (and parameters)
+- [x] Functions
+- [x] Functions as parameters
+- [ ] Functions as return type 
 - [x] Scope
 - [x] Local and global variables
 - [x] Unary operators
