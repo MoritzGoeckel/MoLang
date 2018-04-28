@@ -1,5 +1,5 @@
-# Molang
-This is an fully home made interpreter for a C like language. I build this solely for educational purpose, so maybe you should not use this in production :horse:
+# MoLang
+This is an fully home made interpreter for a C like language. No generators were used: it’s entirely hand crafted in Java. I build this solely for educational purpose, so maybe you should not use this in production :horse:
 
 ## Example code
 ```
@@ -47,7 +47,7 @@ return fibonacci(10);
 ``` java
 String code = Resources.toString(Resources.getResource("complexExample.molang"), StandardCharsets.UTF_8);
 
-Molang lang = new Molang(code);
+MoLang lang = new MoLang(code);
 assertEquals("55", lang.getScope().getReturnValue().toString());
 ```
 
