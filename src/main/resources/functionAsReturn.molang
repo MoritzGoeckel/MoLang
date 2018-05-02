@@ -1,0 +1,8 @@
+add = (x){
+    local result = (y){ return x + y; }
+    return result;
+}
+
+tmp = add(5);
+
+return tmp(3);

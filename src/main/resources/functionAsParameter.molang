@@ -1,0 +1,9 @@
+apply = (y,fun){
+    return fun(y);
+}
+
+mul = (x){
+    return x * 5;
+}
+
+return apply(3, mul);

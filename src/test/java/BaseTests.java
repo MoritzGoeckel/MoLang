@@ -269,4 +269,21 @@ class BaseTests {
         MoLang lang = new MoLang("print 5;");
         lang.execute();
     }
+
+    @Test
+    void anotherExampleTest() throws IOException {
+        String code = Resources.toString(Resources.getResource("functionAsParameter.molang"), StandardCharsets.UTF_8);
+
+        MoLang lang = new MoLang(code);
+        assertEquals("15", lang.executeAndGetScope().getReturnValue().toString());
+    }
+
+    //Todo: This one will fail
+    @Test
+    void functionAsReturnTest() throws IOException {
+        String code = Resources.toString(Resources.getResource("functionAsReturn.molang"), StandardCharsets.UTF_8);
+
+        MoLang lang = new MoLang(code);
+        assertEquals("-", lang.executeAndGetScope().getReturnValue().toString());
+    }
 }
