@@ -51,13 +51,12 @@ public class Tokenizer {
     private String[] separators = {"(", ")", ";", "[", "]", "{", "}", "-", "*", "/", "==", "%", "||", "&&", ",", "++"};
 
     public String preprocess(String code){
-        //code = code.replace("\r\n", " ");
-        code = code.replace('\n', ' ');
-        code = code.replace('\t', ' ');
-        code = code.replace('\r', ' ');
+        code = code.replaceAll("\\/\\/.*|\\/\\*[\\s\\S]*\\*\\/", "");
 
         for(String c : separators)
             code = code.replace(c, " "+c+" ");
+
+        code = code.replaceAll("[\\s\\r\\n]+", " ");
 
         return code;
     }

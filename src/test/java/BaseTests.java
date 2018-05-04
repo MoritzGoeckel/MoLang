@@ -249,8 +249,8 @@ class BaseTests {
     }
 
     @Test
-    void simpleExampleTest() throws IOException {
-        String code = Resources.toString(Resources.getResource("simpleExample.molang"), StandardCharsets.UTF_8);
+    void commentExampleTest() throws IOException {
+        String code = Resources.toString(Resources.getResource("commentExample.molang"), StandardCharsets.UTF_8);
 
         MoLang lang = new MoLang(code);
         assertEquals("42", lang.executeAndGetScope().getReturnValue().toString());

@@ -9,6 +9,8 @@ c = (10 + 3) * a;
 d = a == b;
 e = a < 10;
 
+// This is a comment
+
 fibonacci = (x){
     local result = 1;
     if(x > 2){
@@ -41,6 +43,7 @@ return fibonacci(10);
 - [x] Infix operators
 - [x] Local variables
 - [x] I/O
+- [x] Comments (single / multiline)
 - [ ] String type
 - [ ] Arrays
 

@@ -1,0 +1,11 @@
+a = 42;
+
+// This is a comment
+
+/*
+    This is
+    a multiline
+    comment
+*/
+
+return a;
