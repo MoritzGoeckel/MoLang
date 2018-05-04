@@ -278,6 +278,14 @@ class BaseTests {
         assertEquals("15", lang.executeAndGetScope().getReturnValue().toString());
     }
 
+    @Test
+    void innerReturnTest() throws IOException {
+        String code = Resources.toString(Resources.getResource("returnFromInnerScope.molang"), StandardCharsets.UTF_8);
+
+        MoLang lang = new MoLang(code);
+        assertEquals("3", lang.executeAndGetScope().getReturnValue().toString());
+    }
+
     //Todo: This one will fail
     @Test
     void functionAsReturnTest() throws IOException {

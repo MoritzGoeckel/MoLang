@@ -12,8 +12,12 @@ public class Scope {
 
     private Object returnValue;
 
-    public Scope(Scope parent){
+    private boolean stopEvaluating = false;
+    private boolean isSecondOrderScope;
+
+    public Scope(Scope parent, boolean isSecondOrderScope){
         this.parent = parent;
+        this.isSecondOrderScope = isSecondOrderScope;
     }
 
     public Object getValue(String id){
@@ -54,5 +58,17 @@ public class Scope {
 
     public void setReturnValue(Object returnValue) {
         this.returnValue = returnValue;
+    }
+
+    public boolean isStopEvaluating() {
+        return stopEvaluating;
+    }
+
+    public void triggerStopEvaluating() {
+        this.stopEvaluating = true;
+        if(isSecondOrderScope) {
+            parent.setReturnValue(getReturnValue());
+            parent.triggerStopEvaluating();
+        }
     }
 }

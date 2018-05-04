@@ -3,6 +3,7 @@ import Expressions.Annotations.Annotation;
 import Expressions.Markers.*;
 import Expressions.Operators.Infix.Infix;
 import Expressions.Operators.Operator;
+import Expressions.Operators.Prefix.ImplicitReturn;
 import Expressions.Operators.Prefix.Prefix;
 import Expressions.Operators.Prefix.Return;
 import Expressions.Values.Identifier;
@@ -80,7 +81,7 @@ public class MoLang {
         Expression lastStatement = statements.getLast();
         if(isSibling(lastStatement, RightValue.class) && !isSibling(lastStatement, Return.class)) {
             //Override the last statement
-            Return enhancedStatement = new Return();
+            ImplicitReturn enhancedStatement = new ImplicitReturn();
             enhancedStatement.addOperand(lastStatement);
             statements.set(statements.size() - 1, enhancedStatement);
         }
@@ -306,11 +307,11 @@ public class MoLang {
     }
 
     public Object execute(){
-        return procedure.evaluate(new Scope(null));
+        return procedure.evaluate(new Scope(null, false));
     }
 
     public Scope executeAndGetScope(){
-        Scope scope = new Scope(null);
+        Scope scope = new Scope(null, false);
         procedure.evaluateWithScope(scope);
         return scope;
     }

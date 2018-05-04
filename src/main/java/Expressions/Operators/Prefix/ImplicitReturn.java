@@ -1,23 +1,19 @@
 package Expressions.Operators.Prefix;
 
-import Expressions.Procedure;
 import Expressions.Expression;
+import Expressions.Procedure;
 import Expressions.RightValue;
 import Tokenizer.ExpressionInfo;
 import Util.Scope;
 
-public class Return extends Prefix {
+public class ImplicitReturn extends Prefix {
 
     private static int priority = -3;
     private RightValue operand;
 
-    public static ExpressionInfo getTokenType(){
-        return new ExpressionInfo("Return", x -> x.equals("return"), priority);
-    }
-
     @Override
     public Object evaluate(Scope scope) {
-        Object value;
+        Object value = null;
 
         //Lazy evaluation
         if(operand.getClass() == Procedure.class)
@@ -26,7 +22,7 @@ public class Return extends Prefix {
             value = operand.evaluate(scope);
 
         scope.setReturnValue(value);
-        scope.triggerStopEvaluating();
+        //Does not trigger "stop evaluating" on scope
 
         return value;
     }

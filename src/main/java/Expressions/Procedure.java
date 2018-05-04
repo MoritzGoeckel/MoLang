@@ -7,8 +7,14 @@ public class Procedure extends RightValue {
     private LinkedList<Expression> expressionList;
     private LinkedList<String> argumentNames;
 
+    private boolean isSecondOrderProcedure = false;
+
     public Procedure(){
         this.expressionList = new LinkedList<>();
+    }
+
+    public void makeSecondOrderProcedure(){
+        this.isSecondOrderProcedure = true;
     }
 
     public void addExpression(Expression expression){
@@ -17,11 +23,11 @@ public class Procedure extends RightValue {
 
     @Override
     public Object evaluate(Scope scope) {
-        return evaluateWithScope(new Scope(scope));
+        return evaluateWithScope(new Scope(scope, isSecondOrderProcedure));
     }
 
     public Object evaluateWithArguments(Scope scope, LinkedList<RightValue> values) {
-        Scope thisScope = new Scope(scope);
+        Scope thisScope = new Scope(scope, isSecondOrderProcedure);
 
         if(values.size() != argumentNames.size())
             throw new RuntimeException("Number of arguments does not match: " + values.size() + " != " + argumentNames.size());
@@ -36,6 +42,9 @@ public class Procedure extends RightValue {
     public Object evaluateWithScope(Scope scope){
         for(Expression e : expressionList){
             e.execute(scope);
+
+            if(scope.isStopEvaluating())
+                return scope.getReturnValue();
         }
         return scope.getReturnValue();
     }

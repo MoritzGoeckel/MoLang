@@ -51,11 +51,15 @@ public class Tokenizer {
     private String[] separators = {"(", ")", ";", "[", "]", "{", "}", "-", "*", "/", "==", "%", "||", "&&", ",", "++"};
 
     public String preprocess(String code){
+        //Remove comments (multi and single line)
         code = code.replaceAll("\\/\\/.*|\\/\\*[\\s\\S]*\\*\\/", "");
 
+        //Separate special separating characters
         for(String c : separators)
             code = code.replace(c, " "+c+" ");
 
+        //Simplify (multiple following) whitespaces
+        //and new lines etc. into one one space each
         code = code.replaceAll("[\\s\\r\\n]+", " ");
 
         return code;

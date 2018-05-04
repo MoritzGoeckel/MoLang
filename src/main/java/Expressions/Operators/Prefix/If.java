@@ -11,8 +11,11 @@ public class If extends Conditional {
 
     @Override
     public Object evaluate(Scope scope) {
-        if (condition.evaluate(scope))
-            body.execute(scope);
+        if (condition.evaluate(scope)) {
+            Object output = body.evaluate(scope);
+            if(output != null)
+                scope.setReturnValue(output);
+        }
 
         return null;
     }

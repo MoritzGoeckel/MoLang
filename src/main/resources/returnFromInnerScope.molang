@@ -1,0 +1,8 @@
+test = (x){
+    if(x == 2){
+        return 3;
+    }
+    return x;
+}
+
+return test(2);
