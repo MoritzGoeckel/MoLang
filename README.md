@@ -3,20 +3,32 @@ This is an fully home made interpreter for a C like language. No generators were
 
 ## Example code
 ```
+// Basic operators and precedences
 a = 10 * 30 + 1;
 b = a / 3;
 c = (10 + 3) * a;
 d = a == b;
 e = a < 10;
 
-// This is a comment
+// Functions and local variables
+fun = (x, y){
+    local a = 3; //Overshadowing a
+    return x * y * a;
+}
 
+// Functions as parameters
+apply = (y,fun){
+    return fun(y);
+}
+mul = (x){ return x * 5; }
+result = apply(3, mul);
+
+// Recursion
 fibonacci = (x){
-    local result = 1;
     if(x > 2){
-        result = fibonacci(x - 1) + fibonacci(x - 2);
+        return fibonacci(x - 1) + fibonacci(x - 2);
     }
-    return result;
+    return 1;
 }
 return fibonacci(10);
 ```

@@ -1,11 +1,8 @@
 fibonacci = (x){
-    local result = 1;
-
     if(x > 2){
-        result = fibonacci(x - 1) + fibonacci(x - 2);
+        return fibonacci(x - 1) + fibonacci(x - 2);
     }
-
-    return result;
+    return 1;
 }
 
 return fibonacci(10);

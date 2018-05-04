@@ -13,6 +13,7 @@ public class Procedure extends RightValue {
         this.expressionList = new LinkedList<>();
     }
 
+    //Second order scopes can trigger an return in the parent scope, if an explicit return occurs
     public void makeSecondOrderProcedure(){
         this.isSecondOrderProcedure = true;
     }
